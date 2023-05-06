@@ -2,8 +2,8 @@ package Grid;
 
 public class Grid 
 {
-    private final int ROWS = 50;
-    private final int COLUMNS = 50;
+    private final int ROWS = 10;
+    private final int COLUMNS = 10;
     private int width;
     private int height;
     private int cellWidth;

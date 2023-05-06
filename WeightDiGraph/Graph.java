@@ -9,6 +9,21 @@ public class Graph
     private HashMap<Vertex, HashSet<Edge>> vertexAndEdges;
     private int totalEdges;
 
+    public Vertex getLast(){
+        var iter = vertexAndEdges.keySet().iterator();
+        int id = 0;
+        Vertex max = null;
+        while(iter.hasNext()){
+            Vertex current = iter.next();
+            
+            if(current.getId() > id){
+                max = current;
+                id = max.getId();
+            }
+        }
+        return max;
+    }
+
     public Vertex getVertex(int id)
     {
         var iter = vertexAndEdges.keySet().iterator();

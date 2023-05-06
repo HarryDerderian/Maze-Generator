@@ -3,12 +3,13 @@ package GridGraph;
 import Grid.Grid;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
-
+import WeightDiGraph.Edge;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeMap;
 
 
 public class GridGraph 
@@ -100,13 +101,14 @@ public int getCellWidth(){
             a.removeLeftWall();
             b.removeRightWall();
         }
-        else{
+         else{
             int rightIndex = list.indexOf(a.getRight());
             int leftIndex = list.indexOf(a.getLeft());
             int downIndex = list.indexOf(a.getDown());
             int upIndex = list.indexOf(a.getUp());
             int max = Math.max(Math.max(rightIndex, leftIndex), Math.max(downIndex, upIndex));
-            if(max == rightIndex){
+            if(max == -1) return;
+            else if(max == rightIndex){
                 a.removeRightWall();
                 if(a.getRight() != null){
                     a.getRight().removeLeftWall();
@@ -144,17 +146,23 @@ public int getCellWidth(){
         while(!stack.isEmpty()){
             Vertex temp = current;
             current = stack.pop();
-            connectCells(current, temp, visited);
+            
             if(!visited.contains(current)){
-                // visit current
-                System.out.println(Integer.toString(current.getId()));
+
+                connectCells(current, temp, visited);
                 visited.addLast(current);
+                TreeMap<Integer, Vertex> tree = new TreeMap<Integer, Vertex>();
                 for(Vertex v : graph.getAdjacent(current) ){
                     if(!visited.contains(v)){
-                        //temp = v;
-                        stack.push(v);
+                        graph.getEdges(current).forEach((Edge e)->{
+                            if(e.getDest().getId() == v.getId()){
+                                tree.put(e.getWeight(), v);
+                            }
+                        });
                     }
                 }
+                tree.forEach((Integer i, Vertex v)->stack.push(v));
+
             }
         }
     }

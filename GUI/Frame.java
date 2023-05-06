@@ -10,8 +10,8 @@ import java.awt.Color;
 
 public class Frame extends JFrame
 {
-    private int FRAME_HEIGHT = 600;
-    private int FRAME_WIDTH = 1200;
+    private int FRAME_HEIGHT = 1000;
+    private int FRAME_WIDTH = 1600;
     private String BACKGROUND_IMG_PATH = "C:\\Users\\17143\\Desktop\\Maze Generator\\GUI\\mars.jpg";
     private JLabel backgroundImg;
     private Panel mazePanel;
@@ -20,8 +20,8 @@ public class Frame extends JFrame
     {
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setLayout(null);
-        mazePanel = new Panel(1200,600);
-        mazePanel.setBounds(0,0,1200,600);
+        mazePanel = new Panel(1500,900);
+        mazePanel.setBounds(0,0,1500,900);
         add(mazePanel);
         buildBackgroundImg();
         setVisible(true);

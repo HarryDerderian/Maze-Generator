@@ -39,8 +39,11 @@ public class Panel extends JPanel
     protected void paintComponent(Graphics g) 
     {
         super.paintComponent(g);
-        
-        
+        Vertex start = graph.getVertex(0);
+        g.setColor(Color.RED);
+        g.fillRect(start.getX(), start.getY(), grid.getCellWidth(), grid.getCellHeight());
+        Vertex last = graph.getLast();
+        g.fillRect(last.getX(), last.getY(), grid.getCellWidth(), grid.getCellHeight());
         for(Vertex v : graph.getVertices()){
             g.setColor(Color.CYAN);
             if(v.hasDownWall()){
@@ -59,9 +62,9 @@ public class Panel extends JPanel
             g.setColor(Color.YELLOW);
            // g.drawRect(v.getX(), v.getY(), grid.getCellWidth(), grid.getCellHeight());
             
-           // g.drawString(Integer.toString(v.getId()), v.getX()+grid.getCellWidth()/2, v.getY()+grid.getCellHeight()/2);
+         //   g.drawString(Integer.toString(v.getId()), v.getX()+grid.getCellWidth()/2, v.getY()+grid.getCellHeight()/2);
         }
-       
+        
 
         
     }
