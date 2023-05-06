@@ -10,9 +10,9 @@ import java.awt.Color;
 
 public class Frame extends JFrame
 {
-    private int FRAME_HEIGHT = 1000;
-    private int FRAME_WIDTH = 1600;
-    private String BACKGROUND_IMG_PATH = "C:\\Users\\17143\\Desktop\\Maze Generator\\GUI\\mars.jpg";
+    private int FRAME_HEIGHT = 938;
+    private int FRAME_WIDTH = 1515;
+    private String BACKGROUND_IMG_PATH = "C:\\Users\\17143\\Desktop\\Maze Generator\\GUI\\background.jpg";
     private JLabel backgroundImg;
     private Panel mazePanel;
 
@@ -25,6 +25,7 @@ public class Frame extends JFrame
         add(mazePanel);
         buildBackgroundImg();
         setVisible(true);
+        setResizable(false);
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -36,7 +37,7 @@ public class Frame extends JFrame
         int imgHeight = img.getIconHeight();
         int imgWidth = img.getIconWidth();
         backgroundImg = new JLabel(img);
-        backgroundImg.setBounds(0, -50, imgWidth, imgHeight);
+        backgroundImg.setBounds(0, 0, 1500, 900);
         add(backgroundImg);
     }
 }

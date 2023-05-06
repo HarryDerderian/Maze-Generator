@@ -1,8 +1,10 @@
 package GUI;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -29,8 +31,8 @@ public class Panel extends JPanel
         setPreferredSize(new Dimension(width, height));
         grid = new GridGraph(width, height);
         graph = grid.getGraph();
-        setBackground(Color.BLACK);
-        //setBackground(new Color(0, 0, 0, 0));
+        //setBackground(Color.BLACK);
+        setBackground(new Color(0, 0, 0, 0));
       //  DFS(graph, graph.getVertices().iterator().next());
     }
 
@@ -44,22 +46,25 @@ public class Panel extends JPanel
         g.fillRect(start.getX(), start.getY(), grid.getCellWidth(), grid.getCellHeight());
         Vertex last = graph.getLast();
         g.fillRect(last.getX(), last.getY(), grid.getCellWidth(), grid.getCellHeight());
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.YELLOW);
+        g2d.setStroke(new BasicStroke(3));
         for(Vertex v : graph.getVertices()){
-            g.setColor(Color.CYAN);
+            
             if(v.hasDownWall()){
-                g.drawLine(v.getX(), v.getY() +grid.getCellHeight(), v.getX() + grid.getCellWidth(), v.getY()+grid.getCellHeight());
+                g2d.drawLine(v.getX(), v.getY() +grid.getCellHeight(), v.getX() + grid.getCellWidth(), v.getY()+grid.getCellHeight());
             }
             if(v.hasUpWall()){
-                g.drawLine(v.getX(), v.getY(), v.getX() + grid.getCellWidth(), v.getY());
+                g2d.drawLine(v.getX(), v.getY(), v.getX() + grid.getCellWidth(), v.getY());
             }
             if(v.hasRightWall()){
-                g.drawLine(v.getX()+grid.getCellWidth(),v.getY(),v.getX()+grid.getCellWidth(), v.getY() + grid.getCellHeight());
+                g2d.drawLine(v.getX()+grid.getCellWidth(),v.getY(),v.getX()+grid.getCellWidth(), v.getY() + grid.getCellHeight());
             }
             if(v.hasLeftWall()){
-                g.drawLine(v.getX(),v.getY(),v.getX(), v.getY() + grid.getCellHeight());
+                g2d.drawLine(v.getX(),v.getY(),v.getX(), v.getY() + grid.getCellHeight());
             }
 
-            g.setColor(Color.YELLOW);
+          
            // g.drawRect(v.getX(), v.getY(), grid.getCellWidth(), grid.getCellHeight());
             
          //   g.drawString(Integer.toString(v.getId()), v.getX()+grid.getCellWidth()/2, v.getY()+grid.getCellHeight()/2);
