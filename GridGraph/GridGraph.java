@@ -4,13 +4,10 @@ import Grid.Grid;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 import WeightDiGraph.Edge;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
-
 
 public class GridGraph 
 {
@@ -47,17 +44,6 @@ public int getCellWidth(){
                 vertices[y][x] = v;
             }
         }
-        /*for(int x = 0; x < gridWidth; x += cellWidth){
-            for(int y = 0; y < gridHeight; y += cellHeight){
-                int row = y / cellHeight;
-                int col = x / cellWidth;
-                int id = ((y/cellHeight) *grid.getCOLUMNS()) + x/cellWidth;
-                Vertex v = new Vertex(id,x,y);
-                graph.addVertex(v);
-                vertices[row][col] = v;
-                
-            }
-        }*/
         Random random = new Random();
         int min = 1;
         int max = 20;
@@ -138,15 +124,13 @@ public int getCellWidth(){
     public void makeMaze(){ 
         Stack<Vertex> stack = new Stack<>();
         LinkedList<Vertex> visited = new LinkedList<>();
-        
+
         Vertex startVertex = graph.getRandomVertex();
         stack.push(startVertex);
         Vertex current = startVertex;
-        // DFS must be PRE-ORDER
         while(!stack.isEmpty()){
             Vertex temp = current;
             current = stack.pop();
-            
             if(!visited.contains(current)){
 
                 connectCells(current, temp, visited);
@@ -162,7 +146,6 @@ public int getCellWidth(){
                     }
                 }
                 tree.forEach((Integer i, Vertex v)->stack.push(v));
-
             }
         }
     }
