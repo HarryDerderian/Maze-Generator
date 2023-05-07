@@ -1,13 +1,8 @@
 package GUI;
-
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.awt.Color;
-
-
 public class Frame extends JFrame
 {
     private int FRAME_HEIGHT = 938;
@@ -26,16 +21,12 @@ public class Frame extends JFrame
         buildBackgroundImg();
         setVisible(true);
         setResizable(false);
-        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
     }
 
     private void buildBackgroundImg()
     {
         Icon img = new ImageIcon(BACKGROUND_IMG_PATH);
-        int imgHeight = img.getIconHeight();
-        int imgWidth = img.getIconWidth();
         backgroundImg = new JLabel(img);
         backgroundImg.setBounds(0, 0, 1500, 900);
         add(backgroundImg);
