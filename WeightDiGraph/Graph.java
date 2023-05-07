@@ -2,6 +2,7 @@ package WeightDiGraph;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 
 public class Graph
@@ -116,6 +117,14 @@ public class Graph
                 }
                 });
         }
+    }
+
+
+    public Vertex getRandomVertex()
+    {
+        Random random = new Random();
+        int index = random.nextInt(vertexAndEdges.size());
+        return getVertex(index);
     }
 
     public void clear()

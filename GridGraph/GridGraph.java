@@ -139,7 +139,7 @@ public int getCellWidth(){
         Stack<Vertex> stack = new Stack<>();
         LinkedList<Vertex> visited = new LinkedList<>();
         
-        Vertex startVertex = graph.getVertex(0);
+        Vertex startVertex = graph.getRandomVertex();
         stack.push(startVertex);
         Vertex current = startVertex;
         // DFS must be PRE-ORDER
