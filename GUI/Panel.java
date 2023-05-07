@@ -24,7 +24,7 @@ public class Panel extends JPanel
         setPreferredSize(new Dimension(width, height));
         setBackground(TRANSPARENT);
 
-        // Constrcut maze's grid and graph 
+        // construct maze's grid and graph 
         grid = new GridGraph(width, height);
         graph = grid.getGraph();
         cellWidth = grid.getCellWidth();
