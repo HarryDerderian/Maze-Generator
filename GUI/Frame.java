@@ -7,7 +7,7 @@ public class Frame extends JFrame
 {
     private int FRAME_HEIGHT = 938;
     private int FRAME_WIDTH = 1515;
-    private String BACKGROUND_IMG_PATH = "C:\\Users\\17143\\Desktop\\Maze Generator\\GUI\\background.jpg";
+    private String BACKGROUND_IMG_PATH = "GUI\\background.jpg";
     private JLabel backgroundImg;
     private Panel mazePanel;
 
