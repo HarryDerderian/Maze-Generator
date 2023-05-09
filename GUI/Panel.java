@@ -13,7 +13,8 @@ public class Panel extends JPanel
 {
     private final Color TRANSPARENT = new Color(0, 0, 0, 0);
     private final int WALL_WIDTH = 3; // width of maze walls
-
+    private final Color WALL_COLOR = new Color(0, 169, 181);
+    
     private GridGraph grid;
     private Graph graph;
     private int cellWidth;
@@ -45,7 +46,7 @@ public class Panel extends JPanel
 
     private void drawMaze(Graphics2D g2d)
     {
-        g2d.setColor(Color.YELLOW);
+        g2d.setColor(WALL_COLOR);
         g2d.setStroke(new BasicStroke(WALL_WIDTH));
         graph.getVertices().forEach(vertex->drawWalls(g2d, vertex));
     }
