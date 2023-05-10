@@ -5,17 +5,19 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.JPanel;
 import GridGraph.GridGraph;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 
-public class Panel extends JPanel
+public class Panel extends JPanel implements ComponentListener
 {
-    private final Color TRANSPARENT = new Color(0, 0, 0, 0);
+    private final Color TRANSPARENT = Color.BLACK;//new Color(0, 0, 0, 0);
     private final int WALL_WIDTH = 4; // width of maze walls
-    private final Color WALL_COLOR = new Color(0, 169, 181);
+    private final Color WALL_COLOR = Color.RED;//new Color(0, 169, 181);
 
     private GridGraph grid;
     private Graph graph;
@@ -23,11 +25,13 @@ public class Panel extends JPanel
     private int cellHeight;
     private int width;
     private int height;
+    private boolean resized;
     
     
-    public Panel(){
+    public Panel(int width, int height){
         // Set panel width and height, make transparent.
         setBackground(TRANSPARENT);
+        setPreferredSize(new Dimension(width, height));
     }
 
     private void drawStart(Graphics g){
@@ -68,36 +72,25 @@ public class Panel extends JPanel
         }
     }
 
+    public void buildMaze(){
+        System.out.println("Width: "+getWidth() +" Height: "+getHeight());
+        grid = new GridGraph(getWidth(), getHeight());
+        graph = grid.getGraph();
+        cellWidth = grid.getCellWidth();
+        cellHeight = grid.getCellHeight();
+        repaint();
+
+    }
+
     @Override
     protected void paintComponent(Graphics g) 
     {
         super.paintComponent(g);
+        if(graph != null){
         drawStart(g);
         drawEnd(g);        
         drawMaze((Graphics2D)g);
+        }
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(getWidth(), getHeight());
-    }
-
-    @Override
-    public void addNotify() {
-        super.addNotify();
-
-        // Calculate the size of the panel after it has been added to the frame
-        int width = getWidth();
-        int height = getHeight();
-
-        // construct maze's grid and graph 
-        int numCols = width / 40;   // Change 40 to whatever width you want for each cell
-        int numRows = height / 40;  // Change 40 to whatever height you want for each cell
-        cellWidth = width / numCols;
-        cellHeight = height / numRows;
-        grid = new GridGraph(width, height);
-        graph = grid.getGraph();
-        cellWidth = grid.getCellWidth();
-        cellHeight = grid.getCellHeight();
-    }
 }
