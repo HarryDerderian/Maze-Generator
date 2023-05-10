@@ -4,10 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-
+import java.awt.Image;
+import java.io.File;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import GridGraph.GridGraph;
 import WeightDiGraph.Graph;
@@ -15,22 +14,25 @@ import WeightDiGraph.Vertex;
 
 public class Panel extends JPanel
 {
-    private final Color TRANSPARENT = Color.BLACK;//new Color(0, 0, 0, 0);
+    private String BACKGROUND_IMG_PATH = "GUI/background.jpg";
     private final int WALL_WIDTH = 4; // width of maze walls
-    private final Color WALL_COLOR = Color.RED;//new Color(0, 169, 181);
+    private final Color WALL_COLOR = new Color(0, 169, 181);
 
+    private Image background;
     private GridGraph grid;
     private Graph graph;
     private int cellWidth;
     private int cellHeight;
-    private int width;
-    private int height;
-    private boolean resized;
-    
-    
+
     public Panel(int width, int height){
-        // Set panel width and height, make transparent.
-        setBackground(TRANSPARENT);
+        try
+        {
+            background = ImageIO.read(new File(BACKGROUND_IMG_PATH));
+        }
+        catch(Exception e)
+        {
+            setBackground(Color.BLACK);
+        }
         setPreferredSize(new Dimension(width, height));
     }
 
@@ -86,11 +88,13 @@ public class Panel extends JPanel
     protected void paintComponent(Graphics g) 
     {
         super.paintComponent(g);
-        if(graph != null){
-        drawStart(g);
-        drawEnd(g);        
-        drawMaze((Graphics2D)g);
+        if(background != null)
+            g.drawImage(background, 0, 0, null);
+        if(graph != null)
+        {
+            drawStart(g);
+            drawEnd(g);        
+            drawMaze((Graphics2D)g);
         }
     }
-
 }
