@@ -13,7 +13,7 @@ import GridGraph.GridGraph;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 
-public class Panel extends JPanel implements ComponentListener
+public class Panel extends JPanel
 {
     private final Color TRANSPARENT = Color.BLACK;//new Color(0, 0, 0, 0);
     private final int WALL_WIDTH = 4; // width of maze walls

@@ -10,19 +10,20 @@ import javax.swing.JPanel;
 
 public class Frame extends JFrame
 {
-    private int FRAME_HEIGHT = 900;
-    private int FRAME_WIDTH = 1200;
+    private int MAZE_PANEL_HEIGHT = 900;
+    private int MAZE_PANEL_WIDTH = 900;
    // private String BACKGROUND_IMG_PATH = "GUI/background.jpg";
    // private JLabel backgroundImg;
     private Panel mazePanel;
 
     public Frame()
     {
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        
         setLayout(new BorderLayout()); 
-        mazePanel = new Panel(FRAME_WIDTH,FRAME_HEIGHT);
-        //mazePanel.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+        mazePanel = new Panel(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT);
         add(mazePanel,BorderLayout.CENTER);
+        
+        
         pack();
         mazePanel.buildMaze();
         setVisible(true);
