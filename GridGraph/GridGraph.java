@@ -184,6 +184,10 @@ public int getCellWidth(){
     }
 
     public LinkedList<Vertex> findPath(){
+        if(path != null){
+            path = null;
+            return path;
+        }
         vis = new HashSet<Vertex>();
         path = new LinkedList<>();
         DFS(graph.getVertex(0));
