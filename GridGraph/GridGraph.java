@@ -4,6 +4,8 @@ import Grid.Grid;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 import WeightDiGraph.Edge;
+
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Stack;
@@ -13,6 +15,8 @@ public class GridGraph
 {
     private Graph graph;
     private Grid grid;
+    private HashSet<Vertex> vis;
+    private LinkedList<Vertex> path;
     private Vertex[][] vertices;
     public GridGraph(int gridWidth, int gridHeight, int columns, int rows){
         grid = new Grid(gridWidth, gridHeight, columns,rows);
@@ -53,18 +57,22 @@ public int getCellWidth(){
                 if(y > 0){
                 graph.createEdge(vertices[x][y], vertices[x][y -1], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setLeft(vertices[x][y -1]);
+                vertices[x][y].setWestWall(true);
                 }
                 if(x > 0){
                 graph.createEdge(vertices[x][y], vertices[x-1][y], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setUp(vertices[x-1][y]);
+                vertices[x][y].setNorthWall(true);
                 }
                 if(y < grid.getCOLUMNS() -1){
                 graph.createEdge(vertices[x][y], vertices[x][y+1], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setRight(vertices[x][y+1]);
+                vertices[x][y].setEastWall(true);
                 }
                 if(x < grid.getROWS() -1){
                 graph.createEdge(vertices[x][y], vertices[x+1][y], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setDown(vertices[x+1][y]);
+                vertices[x][y].setSouthWall(true);
                 }
             }
         }
@@ -72,21 +80,23 @@ public int getCellWidth(){
 
     private void connectCells(Vertex a, Vertex b, LinkedList<Vertex> list){
         if(a.getDown() != null && a.getDown().getId() == b.getId()){
-            a.remvoeDownWall();
-            b.removeUpWall();
+            a.setSouthWall(false);
+            b.setNorthWall(false);
         }
         else if(a.getUp()!= null &&a.getUp().getId() == b.getId()){
-            a.removeUpWall();
-            b.remvoeDownWall();
+            b.setSouthWall(false);
+            a.setNorthWall(false);
         }
         else if(a.getRight()!= null&&a.getRight().getId() == b.getId()){
-            a.removeRightWall();
-            b.removeLeftWall();
+            a.setEastWall(false);
+            b.setWestWall(false);
+
         }
         else if(a.getLeft()!= null&&a.getLeft().getId() == b.getId()){
-            a.removeLeftWall();
-            b.removeRightWall();
+            b.setEastWall(false);
+            a.setWestWall(false);
         }
+        // MAJOR CLEAN UP REQUIRED:
          else{
             int rightIndex = list.indexOf(a.getRight());
             int leftIndex = list.indexOf(a.getLeft());
@@ -146,6 +156,51 @@ public int getCellWidth(){
                     }
                 }
                 tree.forEach((Integer i, Vertex v)->stack.push(v));
+            }
+        }
+        removeInvalidEdges();
+
+    }
+
+    private void removeInvalidEdges(){
+        for(Vertex v : graph.getVertices()){
+            if(v.hasDownWall() && v.getDown() != null){
+                graph.removeEdge(v, v.getDown());
+                v.setDown(null);
+            }
+            if(v.hasUpWall() && v.getUp() != null){
+                graph.removeEdge(v, v.getUp());
+                v.setUp(null);
+            }
+            if(v.hasLeftWall() && v.getLeft() != null){
+                graph.removeEdge(v, v.getLeft());
+                v.setLeft(null);
+            }
+            if(v.hasRightWall() && v.getRight() != null){
+                graph.removeEdge(v,v.getRight());
+                v.setRight(null);
+            }
+        }
+    }
+
+    public LinkedList<Vertex> findPath(){
+        vis = new HashSet<Vertex>();
+        path = new LinkedList<>();
+        DFS(graph.getVertex(0));
+        return path;
+    }
+    
+
+    private void DFS(Vertex v){
+        path.addLast(v);
+        if(vis.contains(graph.getLast()))
+        return;
+       for(Vertex adj : graph.getAdjacent(v)){
+            if(!vis.contains(adj)){
+                vis.add(adj);
+                if(v.getId() == graph.getLast().getId())
+                    return;
+                DFS(adj);
             }
         }
     }

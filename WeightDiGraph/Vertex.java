@@ -28,58 +28,85 @@ public class Vertex
     {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
+
     public int getX() {
         return x;
     }
+
     public int getY() {
         return y;
     }
+
     public void setX(int x) {
         this.x = x;
     }
+
     public void setY(int y) {
         this.y = y;
     }
     public void setDown(Vertex down) {
         this.down = down;
-        walls[1] = true;
+      
     }
+    
     public void setLeft(Vertex left) {
         this.left = left;
-        walls[2] = true;
+        
     }
+
     public void setRight(Vertex right) {
         this.right = right;
-        walls[3] = true;   
     }
+
     public void setUp(Vertex up) {
         this.up = up;
-        walls[0] = true;
     }
+    public void setNorthWall(Boolean b){
+        walls[0] = b;
+    }
+    public void setSouthWall(Boolean b){
+        walls[1] = b;
+    }
+    public void setEastWall(Boolean b){
+        walls[3] = b;
+    }
+    public void setWestWall(Boolean b){
+        walls[2] = b;
+    }
+    
+
     public boolean hasUpWall(){
         return walls[0];
     }
+
     public boolean hasDownWall(){
         return walls[1];
     }
+
     public boolean hasLeftWall(){
         return walls[2];
     }
+
     public boolean hasRightWall(){
         return walls[3];
     }
+
     public void removeRightWall(){
         walls[3] = false;
     }
+
     public void removeLeftWall(){
         walls[2] = false;
     }
+
     public void remvoeDownWall(){
         walls[1] = false;
     }
+
     public void removeUpWall(){
         walls[0] = false;
     }

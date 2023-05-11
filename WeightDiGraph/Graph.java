@@ -2,6 +2,7 @@ package WeightDiGraph;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Random;
 
 
@@ -91,14 +92,16 @@ public class Graph
         if(vertexAndEdges.containsKey(origin) 
         && vertexAndEdges.containsKey(destination))
         {
-            for(Edge edge : vertexAndEdges.get(origin))
-            {
-                if(edge.getDest().equals(destination)){
-                    vertexAndEdges.get(origin).remove(edge);
+            var iter = vertexAndEdges.get(origin).iterator();
+            Edge current;
+            while(iter.hasNext()){
+                current = iter.next();
+                if(current.getDest().getId() == destination.getId()){
+                    iter.remove();
                     totalEdges--;
+                    break;
                 }
             }
-            
         }
     }
 
@@ -133,13 +136,21 @@ public class Graph
         totalEdges = 0;
     }
 
-    public HashSet<Vertex> getAdjacent(Vertex v){
-        HashSet<Vertex> adjacentVertices = new HashSet<>();
+    public LinkedList<Vertex> getAdjacent(Vertex v){
+        LinkedList<Vertex> adjacentVertices = new LinkedList<>();
         if(vertexAndEdges.containsKey(v)){
-            
-            for(Edge e : vertexAndEdges.get(v)){
-                adjacentVertices.add(e.getDest());
-            } 
+            if(v.getRight() != null){
+                adjacentVertices.addLast(v.getRight());
+            }
+            if(v.getDown() != null){
+                adjacentVertices.addLast(v.getDown());
+            }
+            if(v.getLeft() != null){
+                adjacentVertices.addLast(v.getLeft());
+            }
+            if(v.getUp() != null){
+                adjacentVertices.addLast(v.getUp());
+            }
         }
         return adjacentVertices;
     }

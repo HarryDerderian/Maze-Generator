@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
+import java.util.LinkedList;
+
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import GridGraph.GridGraph;
@@ -15,7 +17,7 @@ import WeightDiGraph.Vertex;
 public class Panel extends JPanel
 {
     private String BACKGROUND_IMG_PATH = "GUI/background.jpg";
-    private final int WALL_WIDTH = 3; // width of maze walls
+    private final int WALL_WIDTH = 4; // width of maze walls
     private final Color WALL_COLOR = new Color(0, 255, 234);
 
     private Image background;
@@ -23,6 +25,7 @@ public class Panel extends JPanel
     private Graph graph;
     private int cellWidth;
     private int cellHeight;
+    private LinkedList<Vertex> path;
 
     public Panel(int width, int height){
         try
@@ -76,12 +79,44 @@ public class Panel extends JPanel
 
     public void buildMaze(int rows, int columns)
     {
-        System.out.println("Width: "+getWidth() +" Height: "+getHeight());
         grid = new GridGraph(getWidth(), getHeight(), rows, columns);
         graph = grid.getGraph();
         cellWidth = grid.getCellWidth();
         cellHeight = grid.getCellHeight();
         repaint();
+    }
+
+    private void drawPath(Graphics2D g){
+        g.setColor(Color.GRAY);
+        g.setStroke(new BasicStroke(10));
+        for(Vertex v : path){
+            for(Vertex j : graph.getAdjacent(v)){
+                if(path.contains(j)){
+                    drawConnection(v,j,g);
+                }
+            }
+        }
+        
+    }
+
+    private void drawConnection(Vertex start, Vertex end, Graphics2D g){
+        if(start.getUp()!= null&&start.getUp().getId() == end.getId()){
+            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, start.getX() + cellWidth/2, end.getY() +cellHeight/2);
+        }
+        else if(start.getDown()!=null&&start.getDown().getId() == end.getId()){
+            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, start.getX() + cellWidth/2, end.getY() +cellHeight/2);
+        }
+        else if(start.getRight()!= null && start.getRight().getId() == end.getId()){
+            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, end.getX() + cellWidth/2, start.getY() +cellHeight/2);
+        }
+        else if(start.getLeft()!= null &&start.getLeft().getId() == end.getId()){
+            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, end.getX() + cellWidth/2, start.getY() +cellHeight/2);
+        }
+    }
+
+    public void DFS(){
+       path = grid.findPath();
+       repaint();
     }
 
     @Override
@@ -95,6 +130,9 @@ public class Panel extends JPanel
             drawStart(g);
             drawEnd(g);        
             drawMaze((Graphics2D)g);
+        }
+        if(path!= null){
+            drawPath((Graphics2D)g);
         }
     }
 }

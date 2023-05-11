@@ -61,6 +61,9 @@ public class ButtonPanel extends JPanel
         dfsButton.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         dfsButton.setBackground(Color.BLACK);
         dfsButton.setForeground(BUTTON_COLOR);
+        dfsButton.addActionListener((e)->{
+            maze.DFS();
+        });
 
         easy = new JButton("EASY");
         easy.setFocusPainted(false);

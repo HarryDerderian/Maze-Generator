@@ -19,7 +19,6 @@ public class Frame extends JFrame
         buttonPanel = new ButtonPanel(BUTTON_PANEL_WIDTH, MAZE_PANEL_HEIGHT, mazePanel);
         add(buttonPanel, BorderLayout.EAST);
         pack();
-        //mazePanel.buildMaze();
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
