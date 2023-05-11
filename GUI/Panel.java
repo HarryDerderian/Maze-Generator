@@ -15,8 +15,8 @@ import WeightDiGraph.Vertex;
 public class Panel extends JPanel
 {
     private String BACKGROUND_IMG_PATH = "GUI/background.jpg";
-    private final int WALL_WIDTH = 4; // width of maze walls
-    private final Color WALL_COLOR = Color.CYAN;//new Color(140, 24, 24); //new Color(0, 169, 181);
+    private final int WALL_WIDTH = 7; // width of maze walls
+    private final Color WALL_COLOR = Color.BLACK;
 
     private Image background;
     private GridGraph grid;
