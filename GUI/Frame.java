@@ -1,34 +1,37 @@
 package GUI;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Insets;
+import java.io.File;
+
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 public class Frame extends JFrame
 {
-    private int FRAME_HEIGHT = 938;
-    private int FRAME_WIDTH = 1515;
-    private String BACKGROUND_IMG_PATH = "GUI\\background.jpg";
-    private JLabel backgroundImg;
+    private int MAZE_PANEL_HEIGHT = 900;
+    private int MAZE_PANEL_WIDTH = 1200;
     private Panel mazePanel;
+    private ButtonPanel buttonPanel;
 
     public Frame()
     {
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        setLayout(null);
-        mazePanel = new Panel(1500,900);
-        mazePanel.setBounds(0,0,1500,900);
-        add(mazePanel);
-        buildBackgroundImg();
+        
+
+        setLayout(new BorderLayout()); 
+        mazePanel = new Panel(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT);
+        add(mazePanel,BorderLayout.CENTER);
+        buttonPanel = new ButtonPanel(300,MAZE_PANEL_HEIGHT);
+        add(buttonPanel, BorderLayout.EAST);
+        pack();
+        mazePanel.buildMaze();
         setVisible(true);
-        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private void buildBackgroundImg()
-    {
-        Icon img = new ImageIcon(BACKGROUND_IMG_PATH);
-        backgroundImg = new JLabel(img);
-        backgroundImg.setBounds(0, 0, 1500, 900);
-        add(backgroundImg);
-    }
 }
