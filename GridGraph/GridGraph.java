@@ -14,8 +14,8 @@ public class GridGraph
     private Graph graph;
     private Grid grid;
     private Vertex[][] vertices;
-    public GridGraph(int gridWidth, int gridHeight){
-        grid = new Grid(gridWidth, gridHeight);
+    public GridGraph(int gridWidth, int gridHeight, int columns, int rows){
+        grid = new Grid(gridWidth, gridHeight, columns,rows);
         graph = new Graph();
         updateGraph();
         makeMaze();

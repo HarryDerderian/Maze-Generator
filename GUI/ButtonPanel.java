@@ -1,19 +1,15 @@
 package GUI;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.io.File;
-
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class ButtonPanel extends JPanel
@@ -26,10 +22,12 @@ public class ButtonPanel extends JPanel
     private JButton easy;
     private JButton normal;
     private JButton hard;
-    private JButton impossible;
+    private JButton start;
+    private Panel maze;
     
-    public ButtonPanel(int width, int height)
+    public ButtonPanel(int width, int height, Panel maze)
     {
+        this.maze = maze;
         setPreferredSize(new Dimension(width, height));
         setLayout(new GridBagLayout());
         buildButtons();
@@ -69,24 +67,34 @@ public class ButtonPanel extends JPanel
         easy.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         easy.setBackground(Color.BLACK);
         easy.setForeground(BUTTON_COLOR);
+        easy.addActionListener((e)->{
+            maze.buildMaze(10,10);
+        });
 
         normal = new JButton("NORMAL");
         normal.setFocusPainted(false);
         normal.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         normal.setBackground(Color.BLACK);
         normal.setForeground(BUTTON_COLOR);
+        normal.addActionListener((e)->{
+            maze.buildMaze(25,25);
+        });
 
         hard = new JButton("HARD");
         hard.setFocusPainted(false);
         hard.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         hard.setBackground(Color.BLACK);
         hard.setForeground(BUTTON_COLOR);
+        hard.addActionListener((e)->{
+            maze.buildMaze(50,50);
+        });
 
-        impossible = new JButton("IMPOSSIBLE");
-        impossible.setFocusPainted(false);
-        impossible.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
-        impossible.setBackground(Color.BLACK);
-        impossible.setForeground(BUTTON_COLOR);
+        start = new JButton("START");
+        start.setFocusPainted(false);
+        start.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
+        start.setBackground(Color.BLACK);
+        start.setForeground(BUTTON_COLOR);
+
 
     }
 
@@ -115,6 +123,6 @@ public class ButtonPanel extends JPanel
         add(hard, constratins);
 
         constratins.gridy = 5;
-        add(impossible, constratins);
+        add(start, constratins);
     }
 }

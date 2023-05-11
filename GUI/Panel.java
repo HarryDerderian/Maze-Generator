@@ -15,7 +15,7 @@ import WeightDiGraph.Vertex;
 public class Panel extends JPanel
 {
     private String BACKGROUND_IMG_PATH = "GUI/background.jpg";
-    private final int WALL_WIDTH = 4; // width of maze walls
+    private final int WALL_WIDTH = 3; // width of maze walls
     private final Color WALL_COLOR = new Color(0, 255, 234);
 
     private Image background;
@@ -74,14 +74,14 @@ public class Panel extends JPanel
         }
     }
 
-    public void buildMaze(){
+    public void buildMaze(int rows, int columns)
+    {
         System.out.println("Width: "+getWidth() +" Height: "+getHeight());
-        grid = new GridGraph(getWidth(), getHeight());
+        grid = new GridGraph(getWidth(), getHeight(), rows, columns);
         graph = grid.getGraph();
         cellWidth = grid.getCellWidth();
         cellHeight = grid.getCellHeight();
         repaint();
-
     }
 
     @Override
