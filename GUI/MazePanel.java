@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.HashSet;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import GridGraph.GridGraph;
+import Maze.Maze;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 
@@ -22,7 +22,7 @@ public class MazePanel extends JPanel
     private final Color PATH_COLOR = Color.GREEN;
 
     private Image background;
-    private GridGraph grid;
+    private Maze maze;
     private Graph graph;
     private int cellWidth;
     private int cellHeight;
@@ -87,10 +87,10 @@ public class MazePanel extends JPanel
 
     public void updateMaze(int rows, int columns)
     {
-        grid = new GridGraph(getWidth(), getHeight(), rows, columns);
-        graph = grid.getGraph();
-        cellWidth = grid.getCellWidth();
-        cellHeight = grid.getCellHeight();
+        maze = new Maze(getWidth(), getHeight(), rows, columns);
+        graph = maze.getGraph();
+        cellWidth = maze.getCellWidth();
+        cellHeight = maze.getCellHeight();
         repaint();
     }
 
@@ -128,7 +128,7 @@ public class MazePanel extends JPanel
 
     public void updatePath()
     {
-       path = grid.findPath();
+       path = maze.findPath();
        repaint();
     }
 

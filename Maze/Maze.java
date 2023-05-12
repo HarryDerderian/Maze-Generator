@@ -1,4 +1,4 @@
-package GridGraph;
+package Maze;
 
 import Grid.Grid;
 import WeightDiGraph.Graph;
@@ -11,14 +11,14 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
 
-public class GridGraph 
+public class Maze 
 {
     private Graph graph;
     private Grid grid;
     private HashSet<Vertex> vis;
     private HashSet<Vertex> path;
     private Vertex[][] vertices;
-    public GridGraph(int gridWidth, int gridHeight, int columns, int rows){
+    public Maze(int gridWidth, int gridHeight, int columns, int rows){
         grid = new Grid(gridWidth, gridHeight, columns,rows);
         graph = new Graph();
         updateGraph();
