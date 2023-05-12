@@ -1,10 +1,8 @@
 package Maze;
 
-import Grid.Grid;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 import WeightDiGraph.Edge;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
@@ -14,47 +12,72 @@ import java.util.TreeMap;
 public class Maze 
 {
     private Graph graph;
-    private Grid grid;
+    private int rows;
+    private int columns;
+    private int width;
+    private int height;
+    private int cellWidth;
+    private int cellHeight;
+    private Vertex[][] vertices;
+
+    //TODO: better encapsulate:
     private HashSet<Vertex> vis;
     private HashSet<Vertex> path;
-    private Vertex[][] vertices;
-    public Maze(int gridWidth, int gridHeight, int columns, int rows){
-        grid = new Grid(gridWidth, gridHeight, columns,rows);
+
+    public Maze(int mazeWidth, int mazeHeight, int mazeColumns, int mazeRows)
+    {
+        width = mazeWidth;
+        height = mazeHeight;
+        columns = mazeColumns;
+        rows = mazeRows;
+        cellWidth = width / columns;
+        cellHeight = height / rows;
         graph = new Graph();
-        updateGraph();
+        
+        update();
         makeMaze();
     }
     
-public Graph getGraph() {
-    return graph;
-}
-public int getCellHeight(){
-    return grid.getCellHeight();
-}
-public int getCellWidth(){
-    return grid.getCellWidth();
-}
-    private void updateGraph(){
-        int gridWidth = grid.getWidth();
-        int gridHeight = grid.getHeight();
-        int cellHeight = grid.getCellHeight();
-        int cellWidth = grid.getCellWidth();
-        vertices = new Vertex[grid.getROWS()][grid.getCOLUMNS()];
-        for(int x = 0; x <grid.getCOLUMNS(); x++){
-            for(int y = 0; y < grid.getROWS(); y++){
-                int id = (y * grid.getCOLUMNS()) + x;
+    public Graph getGraph() 
+    {
+        return graph;
+    }
+
+    public int getCellHeight()
+    {
+        return cellHeight;
+    }
+
+    public int getCellWidth()
+    {
+        return cellWidth;
+    }
+
+    private void initialize()
+    {
+        vertices = new Vertex[rows][columns];
+        for(int x = 0; x < columns; x++)
+        {
+            for(int y = 0; y < rows; y++) 
+            {                            
+                int id = (y * columns) + x;
                 Vertex v = new Vertex(id, x*cellWidth,y*cellHeight);
                 graph.addVertex(v);
                 vertices[y][x] = v;
             }
         }
+    }
+
+    private void makeGridConnection()
+    {
         Random random = new Random();
         int min = 1;
         int max = 20;
-         for(int x = 0; x < grid.getROWS(); x++){
-            for(int y = 0; y < grid.getCOLUMNS(); y++){
+         for(int x = 0; x < rows; x++){
+            for(int y = 0; y < columns; y++){
                 
-                if(y > 0){
+                if(y > 0)
+                {
                 graph.createEdge(vertices[x][y], vertices[x][y -1], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setLeft(vertices[x][y -1]);
                 vertices[x][y].setWestWall(true);
@@ -64,12 +87,12 @@ public int getCellWidth(){
                 vertices[x][y].setUp(vertices[x-1][y]);
                 vertices[x][y].setNorthWall(true);
                 }
-                if(y < grid.getCOLUMNS() -1){
+                if(y < columns -1){
                 graph.createEdge(vertices[x][y], vertices[x][y+1], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setRight(vertices[x][y+1]);
                 vertices[x][y].setEastWall(true);
                 }
-                if(x < grid.getROWS() -1){
+                if(x < rows -1){
                 graph.createEdge(vertices[x][y], vertices[x+1][y], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setDown(vertices[x+1][y]);
                 vertices[x][y].setSouthWall(true);
@@ -77,8 +100,15 @@ public int getCellWidth(){
             }
         }
     }
+    
+    private void update()
+    {
+        initialize();
+        makeGridConnection();
+    }
 
-    private void connectCells(Vertex a, Vertex b, LinkedList<Vertex> list){
+    private void connectCells(Vertex a, Vertex b, LinkedList<Vertex> list)
+    {
         if(a.getDown() != null && a.getDown().getId() == b.getId()){
             a.setSouthWall(false);
             b.setNorthWall(false);
@@ -162,7 +192,8 @@ public int getCellWidth(){
 
     }
 
-    private void removeInvalidEdges(){
+    private void removeInvalidEdges()
+    {
         for(Vertex v : graph.getVertices()){
             if(v.hasDownWall() && v.getDown() != null){
                 graph.removeEdge(v, v.getDown());
@@ -183,7 +214,8 @@ public int getCellWidth(){
         }
     }
 
-    public HashSet<Vertex> findPath(){
+    public HashSet<Vertex> findPath()
+    {
         if(path != null){
             path = null;
             return path;
@@ -196,7 +228,8 @@ public int getCellWidth(){
         return path;
     }
     
-    Vertex DFS(Vertex current, Vertex target){
+    Vertex DFS(Vertex current, Vertex target)
+    {
         if(target.getId() == current.getId())
         return current;
 
@@ -214,18 +247,4 @@ public int getCellWidth(){
         else
         return graph.getVertex(0);
     }
-/* 
-    private void DFS(Vertex v){
-        path.addLast(v);
-        if(vis.contains(graph.getLast()))
-        return;
-       for(Vertex adj : graph.getAdjacent(v)){
-            if(!vis.contains(adj)){
-                vis.add(adj);
-                if(v.getId() == graph.getLast().getId())
-                    return;
-                DFS(adj);
-            }
-        }
-    }*/
 }

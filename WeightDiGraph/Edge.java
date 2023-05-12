@@ -6,7 +6,7 @@ public class Edge
     private Vertex dest;
     private Vertex origin;
     
-    private Edge(){};
+  
     
     public Edge(Vertex origin, Vertex dest){
         this.origin = origin;

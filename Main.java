@@ -4,6 +4,6 @@ public class Main
     public static void main(String[] args)
     {
         // Run the G.U.I. main loop:
-        Frame window = new Frame();
+        new Frame();
     }
 }
