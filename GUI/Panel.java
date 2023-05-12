@@ -87,8 +87,8 @@ public class Panel extends JPanel
     }
 
     private void drawPath(Graphics2D g){
-        g.setColor(Color.GRAY);
-        g.setStroke(new BasicStroke(10));
+        g.setColor(Color.GREEN);
+        g.setStroke(new BasicStroke(1));
         for(Vertex v : path){
             for(Vertex j : graph.getAdjacent(v)){
                 if(path.contains(j)){

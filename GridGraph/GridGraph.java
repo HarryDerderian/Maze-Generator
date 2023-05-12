@@ -190,11 +190,28 @@ public int getCellWidth(){
         }
         vis = new HashSet<Vertex>();
         path = new LinkedList<>();
-        DFS(graph.getVertex(0));
+        DFS(graph.getVertex(0),graph.getLast());
         return path;
     }
     
+    Vertex DFS(Vertex current, Vertex target){
+        if(target.getId() == current.getId())
+        return current;
 
+        for(Vertex v : graph.getAdjacent(current)){
+
+            if(!vis.contains(v) && !vis.contains(target))
+            {
+                vis.add(v);
+                path.add(DFS(v, target));
+            }
+        }
+        if(vis.contains(target))
+        return current;
+        else
+        return graph.getVertex(0);
+    }
+/* 
     private void DFS(Vertex v){
         path.addLast(v);
         if(vis.contains(graph.getLast()))
@@ -207,5 +224,5 @@ public int getCellWidth(){
                 DFS(adj);
             }
         }
-    }
+    }*/
 }
