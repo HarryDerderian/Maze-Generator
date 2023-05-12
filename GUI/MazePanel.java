@@ -15,7 +15,7 @@ import WeightDiGraph.Vertex;
 
 public class MazePanel extends JPanel
 {
-    private String BACKGROUND_IMG_PATH = "GUI/background.jpg";
+    private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/background.jpg";
     private final int MAZE_WALL_WIDTH = 4; 
     private final float PATH_LINE_WIDTH = (float) 0.25;
     private final Color WALL_COLOR = Color.CYAN;

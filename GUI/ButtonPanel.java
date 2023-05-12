@@ -13,7 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class ButtonPanel extends JPanel
-{   private String BACKGROUND_IMG_PATH = "GUI/button_background.jpg";
+{   private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/button_background.jpg";
     private final Color BUTTON_COLOR = new Color(88, 222, 224);
 
     private Image background;
