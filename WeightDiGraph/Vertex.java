@@ -10,7 +10,7 @@ public class Vertex
     private Vertex down;
     private Vertex left;
     private Vertex right;
-    private boolean[] walls; // 0:up 1:down 2:left 3:right
+    private boolean[] walls; // [0]: up, [1]: down, [2]: left, [3]: right
 
     public Vertex(int id, int x, int y)
     {

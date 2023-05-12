@@ -132,6 +132,13 @@ public class MazePanel extends JPanel
        repaint();
     }
 
+    public void clear()
+    {
+        maze = null;
+        graph = null;
+        path = null;
+    }
+
     @Override
     protected void paintComponent(Graphics g) 
     {
