@@ -8,15 +8,16 @@ public class Frame extends JFrame
     private final int MAZE_PANEL_HEIGHT = 900;
     private final int MAZE_PANEL_WIDTH = 1200;
     private final int BUTTON_PANEL_WIDTH = 300;
-    private Panel mazePanel;
+    private MazePanel mazePanel;
     private ButtonPanel buttonPanel;
 
     public Frame()
     {
         setLayout(new BorderLayout()); 
-        mazePanel = new Panel(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT);
-        add(mazePanel,BorderLayout.CENTER);
-        buttonPanel = new ButtonPanel(BUTTON_PANEL_WIDTH, MAZE_PANEL_HEIGHT, mazePanel);
+        mazePanel = new MazePanel(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT);
+        add(mazePanel, BorderLayout.CENTER);
+        buttonPanel = new ButtonPanel(BUTTON_PANEL_WIDTH, 
+                                      MAZE_PANEL_HEIGHT, mazePanel);
         add(buttonPanel, BorderLayout.EAST);
         pack();
         setVisible(true);

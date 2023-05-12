@@ -23,23 +23,30 @@ public class ButtonPanel extends JPanel
     private JButton normal;
     private JButton hard;
     private JButton start;
-    private Panel maze;
+    private MazePanel maze;
     
-    public ButtonPanel(int width, int height, Panel maze)
+    public ButtonPanel(int width, int height, MazePanel maze)
     {
         this.maze = maze;
         setPreferredSize(new Dimension(width, height));
         setLayout(new GridBagLayout());
         buildButtons();
         addButtons();
-        try{
+        buildBackground();
+    }
+    
+    private void buildBackground()
+    {
+        try
+        {
             background = ImageIO.read(new File(BACKGROUND_IMG_PATH));
         }
-        catch(Exception e){
+        catch(Exception e)
+        {
             setBackground(Color.BLACK);
         }
-
-    }    
+    }
+    
     @Override
     protected void paintComponent(Graphics g) 
     {
@@ -61,71 +68,65 @@ public class ButtonPanel extends JPanel
         dfsButton.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         dfsButton.setBackground(Color.BLACK);
         dfsButton.setForeground(BUTTON_COLOR);
-        dfsButton.addActionListener((e)->{
-            maze.DFS();
-        });
+        dfsButton.addActionListener(e->maze.updatePath());
 
         easy = new JButton("EASY");
         easy.setFocusPainted(false);
         easy.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         easy.setBackground(Color.BLACK);
         easy.setForeground(BUTTON_COLOR);
-        easy.addActionListener((e)->{
-            maze.buildMaze(10,10);
-        });
+        easy.addActionListener(e->maze.updateMaze(10,10));
 
         normal = new JButton("NORMAL");
         normal.setFocusPainted(false);
         normal.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         normal.setBackground(Color.BLACK);
         normal.setForeground(BUTTON_COLOR);
-        normal.addActionListener((e)->{
-            maze.buildMaze(25,25);
-        });
+        normal.addActionListener(e->maze.updateMaze(25,25));
 
         hard = new JButton("HARD");
         hard.setFocusPainted(false);
         hard.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         hard.setBackground(Color.BLACK);
         hard.setForeground(BUTTON_COLOR);
-        hard.addActionListener((e)->{
-            maze.buildMaze(50,50);
-        });
+        hard.addActionListener(e->maze.updateMaze(50,50));
 
         start = new JButton("START");
         start.setFocusPainted(false);
         start.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         start.setBackground(Color.BLACK);
         start.setForeground(BUTTON_COLOR);
-
-
     }
 
     private void addButtons()
     {
         GridBagConstraints constratins = new GridBagConstraints();        
+        
+        // Padding/sizing buttons:
         constratins.fill = GridBagConstraints.HORIZONTAL;
         constratins.weightx = 1;
         constratins.insets = new Insets(40, 20,40, 20);
         constratins.ipady = 25;
-        constratins.gridx = 0;
+
+        // Nx1 matrix
+        constratins.gridx = 0; // column 1 (only column) 
         
-        constratins.gridy = 0;
+        constratins.gridy = 0; // row 1
         add(dfsButton, constratins);
         
-        constratins.gridy = 1;
+        constratins.gridy = 1; // row 2
         add(bfsButton, constratins);
 
-        constratins.gridy = 2;
+        constratins.gridy = 2; // row 3
         add(easy, constratins);
 
-        constratins.gridy = 3;
+        constratins.gridy = 3; // row 4
         add(normal, constratins);
 
-        constratins.gridy = 4;
+        constratins.gridy = 4; // row 5
         add(hard, constratins);
 
-        constratins.gridy = 5;
+        constratins.gridy = 5; // row 6
         add(start, constratins);
     }
 }
