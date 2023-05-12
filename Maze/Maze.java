@@ -60,8 +60,8 @@ public class Maze
         {
             for(int y = 0; y < rows; y++) 
             {                            
-                int id = (y * columns) + x;
-                Vertex v = new Vertex(id, x*cellWidth,y*cellHeight);
+                int id = y * columns + x;
+                Vertex v = new Vertex(id, x*cellWidth, y*cellHeight);
                 graph.addVertex(v);
                 vertices[y][x] = v;
             }
@@ -72,7 +72,7 @@ public class Maze
     {
         Random random = new Random();
         int min = 1;
-        int max = 20;
+        int max = 4;
          for(int x = 0; x < rows; x++){
             for(int y = 0; y < columns; y++){
                 
@@ -80,27 +80,29 @@ public class Maze
                 {
                 graph.createEdge(vertices[x][y], vertices[x][y -1], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setLeft(vertices[x][y -1]);
-                vertices[x][y].setWestWall(true);
+
                 }
                 if(x > 0){
                 graph.createEdge(vertices[x][y], vertices[x-1][y], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setUp(vertices[x-1][y]);
-                vertices[x][y].setNorthWall(true);
+
                 }
                 if(y < columns -1){
                 graph.createEdge(vertices[x][y], vertices[x][y+1], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setRight(vertices[x][y+1]);
-                vertices[x][y].setEastWall(true);
+
                 }
                 if(x < rows -1){
                 graph.createEdge(vertices[x][y], vertices[x+1][y], random.nextInt(max - min + 1) + min);
                 vertices[x][y].setDown(vertices[x+1][y]);
-                vertices[x][y].setSouthWall(true);
+
                 }
             }
         }
     }
     
+    
+
     private void update()
     {
         initialize();

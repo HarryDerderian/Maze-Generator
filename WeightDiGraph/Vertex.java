@@ -18,6 +18,11 @@ public class Vertex
         this.x = x;
         this.y = y;
         walls = new boolean[4];
+        walls[0] = true;
+        walls[1] = true;
+        walls[2] = true;
+        walls[3] = true;
+
         up = null;
         down = null;
         right = null;
