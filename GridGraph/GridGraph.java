@@ -201,8 +201,9 @@ public int getCellWidth(){
         return current;
 
         for(Vertex v : graph.getAdjacent(current)){
-
-            if(!vis.contains(v) && !vis.contains(target))
+            if(vis.contains(target))
+            break;
+            if(!vis.contains(v))
             {
                 vis.add(v);
                 path.add(DFS(v, target));
