@@ -5,10 +5,20 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.HashSet;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
 import Maze.Maze;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
@@ -27,11 +37,89 @@ public class MazePanel extends JPanel
     private int cellWidth;
     private int cellHeight;
     private HashSet<Vertex> path;
+    private Vertex currentPos;
+
+
 
     public MazePanel(int width, int height)
     {
         setPreferredSize(new Dimension(width, height));
         buildBackground();
+        buildKeyBinding();
+    }
+
+    private void buildKeyBinding()
+    {
+        KeyStroke w = KeyStroke.getKeyStroke(KeyEvent.VK_W, 0);
+        KeyStroke s = KeyStroke.getKeyStroke(KeyEvent.VK_S, 0);
+        KeyStroke a = KeyStroke.getKeyStroke(KeyEvent.VK_A, 0);
+        KeyStroke d = KeyStroke.getKeyStroke(KeyEvent.VK_D, 0);
+        getInputMap().put(w, "moveUp");
+        getInputMap().put(s,"moveDown");
+        getInputMap().put(a,"moveLeft");
+        getInputMap().put(d,"moveRight");
+
+       
+        getActionMap().put("moveUp", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(graph == null || currentPos == null)
+                return;
+                if(currentPos.hasUpWall())
+                return;
+
+                currentPos = currentPos.getUp();
+                if(path != null)
+                updatePath();
+                
+                repaint();
+            }});
+            getActionMap().put("moveDown", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(graph == null || currentPos == null)
+                return;
+                if(currentPos.hasDownWall())
+                return;
+
+                currentPos = currentPos.getDown();
+                if(path != null)
+                updatePath();
+                
+                repaint();
+            }});
+            getActionMap().put("moveLeft", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(graph == null || currentPos == null)
+                return;
+                if(currentPos.hasLeftWall())
+                return;
+
+                currentPos = currentPos.getLeft();
+                if(path != null)
+                updatePath();
+
+                repaint();
+            }});
+        getActionMap().put("moveRight", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(graph == null || currentPos == null)
+                return;
+                if(currentPos.hasRightWall())
+                return;
+
+                currentPos = currentPos.getRight();
+                if(path != null)
+                updatePath();
+                repaint();
+            }});
+            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 
     private void buildBackground()
@@ -46,11 +134,10 @@ public class MazePanel extends JPanel
         }
     }
 
-    private void drawStart(Graphics g)
+    private void drawCurrentPos(Graphics g)
     {
-        Vertex start = graph.getVertex(0);
         g.setColor(Color.GREEN);
-        g.fillRect(start.getX(), start.getY(), cellWidth, cellHeight);
+        g.fillRect(currentPos.getX(), currentPos.getY(), cellWidth, cellHeight);
     }
 
     private void drawEnd(Graphics g)
@@ -91,7 +178,9 @@ public class MazePanel extends JPanel
         graph = maze.getGraph();
         cellWidth = maze.getCellWidth();
         cellHeight = maze.getCellHeight();
+        currentPos = graph.getVertex(0);
         repaint();
+        requestFocus();
     }
 
     private void drawPath(Graphics2D g)
@@ -128,8 +217,9 @@ public class MazePanel extends JPanel
 
     public void updatePath()
     {
-       path = maze.findPath();
+       path = maze.findPath(currentPos);
        repaint();
+       requestFocus();
     }
 
     public void clear()
@@ -137,6 +227,7 @@ public class MazePanel extends JPanel
         maze = null;
         graph = null;
         path = null;
+        requestFocus();
     }
 
     @Override
@@ -151,7 +242,7 @@ public class MazePanel extends JPanel
         // Drawing of the maze:
         if(graph != null)
         {
-            drawStart(g); // Start Vertex 
+            drawCurrentPos(g); // Start Vertex 
             drawEnd(g);   // End Vertex
             drawMaze((Graphics2D)g); // Maze
         }
@@ -159,6 +250,5 @@ public class MazePanel extends JPanel
         // Drawing path from start to end:
         if(path!= null)
             drawPath((Graphics2D)g);
-        
     }
 }

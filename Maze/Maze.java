@@ -216,7 +216,7 @@ public class Maze
         }
     }
 
-    public HashSet<Vertex> findPath()
+    public HashSet<Vertex> findPath(Vertex start)
     {
         if(path != null){
             path = null;
@@ -224,9 +224,9 @@ public class Maze
         }
         vis = new HashSet<Vertex>();
         path = new HashSet<>();
-        path.add(graph.getVertex(0));
-        vis.add(graph.getVertex(0));
-        DFS(graph.getVertex(0),graph.getLast());
+        path.add(start);
+        vis.add(start);
+        DFS(start,graph.getLast());
         return path;
     }
     
@@ -241,12 +241,14 @@ public class Maze
             if(!vis.contains(v))
             {
                 vis.add(v);
-                path.add(DFS(v, target));
+                Vertex temp = DFS(v, target);
+                if(temp != null)
+                path.add(temp);
             }
         }
         if(vis.contains(target))
         return current;
         else
-        return graph.getVertex(0);
+        return null;
     }
 }

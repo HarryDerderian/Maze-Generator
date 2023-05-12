@@ -24,6 +24,8 @@ public class Frame extends JFrame implements ComponentListener
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addComponentListener(this);
+        setLocationRelativeTo(null);
+
     }
 
     @Override
