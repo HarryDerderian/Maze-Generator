@@ -16,7 +16,7 @@ public class GridGraph
     private Graph graph;
     private Grid grid;
     private HashSet<Vertex> vis;
-    private LinkedList<Vertex> path;
+    private HashSet<Vertex> path;
     private Vertex[][] vertices;
     public GridGraph(int gridWidth, int gridHeight, int columns, int rows){
         grid = new Grid(gridWidth, gridHeight, columns,rows);
@@ -183,13 +183,15 @@ public int getCellWidth(){
         }
     }
 
-    public LinkedList<Vertex> findPath(){
+    public HashSet<Vertex> findPath(){
         if(path != null){
             path = null;
             return path;
         }
         vis = new HashSet<Vertex>();
-        path = new LinkedList<>();
+        path = new HashSet<>();
+        path.add(graph.getVertex(0));
+        vis.add(graph.getVertex(0));
         DFS(graph.getVertex(0),graph.getLast());
         return path;
     }

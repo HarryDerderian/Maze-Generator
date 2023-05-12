@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
-import java.util.LinkedList;
+import java.util.HashSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -25,7 +25,7 @@ public class Panel extends JPanel
     private Graph graph;
     private int cellWidth;
     private int cellHeight;
-    private LinkedList<Vertex> path;
+    private HashSet<Vertex> path;
 
     public Panel(int width, int height){
         try
@@ -101,16 +101,16 @@ public class Panel extends JPanel
 
     private void drawConnection(Vertex start, Vertex end, Graphics2D g){
         if(start.getUp()!= null&&start.getUp().getId() == end.getId()){
-            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, start.getX() + cellWidth/2, end.getY() +cellHeight/2);
+            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, end.getX() + cellWidth/2, end.getY() +cellHeight/2);
         }
         else if(start.getDown()!=null&&start.getDown().getId() == end.getId()){
-            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, start.getX() + cellWidth/2, end.getY() +cellHeight/2);
+            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, end.getX() + cellWidth/2, end.getY() +cellHeight/2);
         }
         else if(start.getRight()!= null && start.getRight().getId() == end.getId()){
-            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, end.getX() + cellWidth/2, start.getY() +cellHeight/2);
+            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, end.getX() + cellWidth/2, end.getY() +cellHeight/2);
         }
         else if(start.getLeft()!= null &&start.getLeft().getId() == end.getId()){
-            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, end.getX() + cellWidth/2, start.getY() +cellHeight/2);
+            g.drawLine(start.getX() + cellWidth/2, start.getY() + cellHeight/2, end.getX() + cellWidth/2, end.getY() +cellHeight/2);
         }
     }
 
