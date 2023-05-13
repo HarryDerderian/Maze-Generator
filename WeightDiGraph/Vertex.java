@@ -6,17 +6,21 @@ public class Vertex
     private int id;
     private int x;
     private int y;
+    private int row;
+    private int column;
     private Vertex up;
     private Vertex down;
     private Vertex left;
     private Vertex right;
     private boolean[] walls; // [0]: up, [1]: down, [2]: left, [3]: right
 
-    public Vertex(int id, int x, int y)
+    public Vertex(int id, int x, int y, int row, int column)
     {
         this.id = id;
         this.x = x;
         this.y = y;
+        this.column = column;
+        this.row = row;
         walls = new boolean[4];
         walls[0] = true;
         walls[1] = true;
@@ -29,6 +33,12 @@ public class Vertex
         left = null;
     }
 
+    public int getColumn() {
+        return column;
+    }
+    public int getRow() {
+        return row;
+    }
     public int getId()
     {
         return id;

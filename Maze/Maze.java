@@ -12,13 +12,13 @@ import java.util.TreeMap;
 public class Maze 
 {
     private Graph graph;
-    private int rows;
-    private int columns;
+    private int numRows;
+    private int numColumns;
     private int width;
     private int height;
     private int cellWidth;
     private int cellHeight;
-    private Vertex[][] vertices;
+
 
     //TODO: better encapsulate:
     private HashSet<Vertex> vis;
@@ -28,13 +28,13 @@ public class Maze
     {
         width = mazeWidth;
         height = mazeHeight;
-        columns = mazeColumns;
-        rows = mazeRows;
-        cellWidth = width / columns;
-        cellHeight = height / rows;
+        numColumns = mazeColumns;
+        numRows = mazeRows;
+        cellWidth = width / numColumns;
+        cellHeight = height / numRows;
         graph = new Graph();
         
-        update();
+        initializeGrid();
         makeMaze();
     }
     
@@ -53,83 +53,64 @@ public class Maze
         return cellWidth;
     }
 
-    private void initialize()
+    private void initializeGrid()
     {
-        vertices = new Vertex[rows][columns];
-        for(int x = 0; x < columns; x++)
+        for(int column = 0; column < numColumns; column++)
         {
-            for(int y = 0; y < rows; y++) 
+            for(int row = 0; row < numRows; row++) 
             {                            
-                int id = y * columns + x;
-                Vertex v = new Vertex(id, x*cellWidth, y*cellHeight);
+                int id = row * numColumns + column;
+                Vertex v = new Vertex(id, column * cellWidth, row * cellHeight, row, column);
                 graph.addVertex(v);
-                vertices[y][x] = v;
             }
+        }
+        // Connect each vertex to it's right, left, upper, lower.
+        graph.getVertices().forEach(vertex->connectAdjacentCells(vertex));
+    }
+
+    private void connectAdjacentCells(Vertex vertex)
+    {
+        int row = vertex.getRow();
+        int column = vertex.getColumn();
+        int vertexNum = vertex.getId();
+
+        if(row > 0) 
+        {   // Connect to top vertex
+            Vertex topVertex = graph.getVertex(vertexNum - numColumns);
+            graph.createEdge(vertex, topVertex, randomWeight());
+            vertex.setUp(topVertex);
+        }
+        if(row < numRows -1) 
+        {   // connect to bottom vertex
+            Vertex bottomVertex = graph.getVertex(vertexNum + numColumns);
+            graph.createEdge(vertex, bottomVertex, randomWeight());
+            vertex.setDown(bottomVertex);
+        }
+        if(column > 0) 
+        {   // connect to left vertex
+            Vertex leftVertex = graph.getVertex(vertexNum -1);
+            graph.createEdge(vertex, leftVertex, randomWeight());
+            vertex.setLeft(leftVertex);
+        }
+        if(column < numColumns -1) 
+        {   // connect to right vertex 
+            Vertex rightVertex = graph.getVertex(vertexNum +1);
+            graph.createEdge(vertex, rightVertex, randomWeight());
+            vertex.setRight(rightVertex);
         }
     }
 
-    private void makeGridConnection()
+    private int randomWeight()
     {
         Random random = new Random();
-        int min = 1;
         int max = 4;
-         for(int x = 0; x < rows; x++){
-            for(int y = 0; y < columns; y++){
-                
-                if(y > 0)
-                {
-                graph.createEdge(vertices[x][y], vertices[x][y -1], random.nextInt(max - min + 1) + min);
-                vertices[x][y].setLeft(vertices[x][y -1]);
-
-                }
-                if(x > 0){
-                graph.createEdge(vertices[x][y], vertices[x-1][y], random.nextInt(max - min + 1) + min);
-                vertices[x][y].setUp(vertices[x-1][y]);
-
-                }
-                if(y < columns -1){
-                graph.createEdge(vertices[x][y], vertices[x][y+1], random.nextInt(max - min + 1) + min);
-                vertices[x][y].setRight(vertices[x][y+1]);
-
-                }
-                if(x < rows -1){
-                graph.createEdge(vertices[x][y], vertices[x+1][y], random.nextInt(max - min + 1) + min);
-                vertices[x][y].setDown(vertices[x+1][y]);
-
-                }
-            }
-        }
+        int min = 1;
+        return random.nextInt(max - min + 1) + min;
     }
     
-    
-
-    private void update()
+    private void breakWalls(Vertex a, Vertex b, LinkedList<Vertex> list)
     {
-        initialize();
-        makeGridConnection();
-    }
-
-    private void connectCells(Vertex a, Vertex b, LinkedList<Vertex> list)
-    {
-        if(a.getDown() != null && a.getDown().getId() == b.getId()){
-            a.setSouthWall(false);
-            b.setNorthWall(false);
-        }
-        else if(a.getUp()!= null &&a.getUp().getId() == b.getId()){
-            b.setSouthWall(false);
-            a.setNorthWall(false);
-        }
-        else if(a.getRight()!= null&&a.getRight().getId() == b.getId()){
-            a.setEastWall(false);
-            b.setWestWall(false);
-
-        }
-        else if(a.getLeft()!= null&&a.getLeft().getId() == b.getId()){
-            b.setEastWall(false);
-            a.setWestWall(false);
-        }
-        // MAJOR CLEAN UP REQUIRED:
-         else{
+     
             int rightIndex = list.indexOf(a.getRight());
             int leftIndex = list.indexOf(a.getLeft());
             int downIndex = list.indexOf(a.getDown());
@@ -160,7 +141,6 @@ public class Maze
                     a.getUp().remvoeDownWall();
                 }
             }
-        }
     }
 
     public void makeMaze(){ 
@@ -175,7 +155,7 @@ public class Maze
             current = stack.pop();
             if(!visited.contains(current)){
 
-                connectCells(current, temp, visited);
+                breakWalls(current, temp, visited);
                 visited.addLast(current);
                 TreeMap<Integer, Vertex> tree = new TreeMap<Integer, Vertex>();
                 for(Vertex v : graph.getAdjacent(current) ){
@@ -196,23 +176,30 @@ public class Maze
 
     private void removeInvalidEdges()
     {
-        for(Vertex v : graph.getVertices()){
-            if(v.hasDownWall() && v.getDown() != null){
-                graph.removeEdge(v, v.getDown());
-                v.setDown(null);
-            }
-            if(v.hasUpWall() && v.getUp() != null){
-                graph.removeEdge(v, v.getUp());
-                v.setUp(null);
-            }
-            if(v.hasLeftWall() && v.getLeft() != null){
-                graph.removeEdge(v, v.getLeft());
-                v.setLeft(null);
-            }
-            if(v.hasRightWall() && v.getRight() != null){
-                graph.removeEdge(v,v.getRight());
-                v.setRight(null);
-            }
+        graph.getVertices().forEach(vertex->rectify(vertex));
+    }
+
+    private void rectify(Vertex v)
+    {
+        if(v.hasDownWall() && v.getDown() != null)
+        {
+            graph.removeEdge(v, v.getDown());
+            v.setDown(null);
+        }
+        if(v.hasUpWall() && v.getUp() != null)
+        {
+            graph.removeEdge(v, v.getUp());
+            v.setUp(null);
+        }
+        if(v.hasLeftWall() && v.getLeft() != null)
+        {
+            graph.removeEdge(v, v.getLeft());
+            v.setLeft(null);
+        }
+        if(v.hasRightWall() && v.getRight() != null)
+        {
+            graph.removeEdge(v,v.getRight());
+            v.setRight(null);
         }
     }
 
