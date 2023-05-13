@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.HashSet;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -162,13 +161,14 @@ public class MazePanel extends JPanel
 
     public void updatePath()
     {
-       if(path != null){
-        path = null;
-        repaint();
-        return;
-       }
-       path = maze.findPath(currentPos);
-       repaint();
+      if(graph == null)
+            return; // (No graph) -> (No Maze to navigate).
+      else if(path == null)
+            path = maze.findPath(currentPos);
+      else if(path != null)
+            path = null; // clear path, (user clicked with already displayed path)
+      
+      repaint();
     }
 
     public void clear()
@@ -176,6 +176,7 @@ public class MazePanel extends JPanel
         maze = null;
         graph = null;
         path = null;
+        repaint();
     }
 
     @Override
@@ -205,14 +206,11 @@ public class MazePanel extends JPanel
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            if(graph == null || currentPos == null)
-            return;
-            if(currentPos.hasUpWall())
-            return;
-
+            if(graph == null || currentPos.hasUpWall())
+                return;
             currentPos = currentPos.getUp();
             if(path != null)
-            path = maze.findPath(currentPos);
+                path = maze.findPath(currentPos);
             repaint();
         }
     }
@@ -222,14 +220,11 @@ public class MazePanel extends JPanel
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            if(graph == null || currentPos == null)
-            return;
-            if(currentPos.hasDownWall())
-            return;
-
+            if(graph == null || currentPos.hasDownWall())
+               return;
             currentPos = currentPos.getDown();
             if(path != null)
-            path = maze.findPath(currentPos);
+                path = maze.findPath(currentPos);
             repaint();
         }
     }
@@ -239,31 +234,24 @@ public class MazePanel extends JPanel
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            if(graph == null || currentPos == null)
-            return;
-            if(currentPos.hasRightWall())
-            return;
-
+            if(graph == null || currentPos.hasRightWall())
+               return;
             currentPos = currentPos.getRight();
             if(path != null)
-            path = maze.findPath(currentPos);
+                path = maze.findPath(currentPos);
             repaint();
         }
     }
-
     private class MoveLeft extends AbstractAction
     {
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            if(graph == null || currentPos == null)
-            return;
-            if(currentPos.hasLeftWall())
-            return;
-
+            if(graph == null || currentPos.hasLeftWall())
+               return;
             currentPos = currentPos.getLeft();
             if(path != null)
-            path = maze.findPath(currentPos);
+                path = maze.findPath(currentPos);
             repaint();
         }
     }
