@@ -75,21 +75,21 @@ public class ButtonPanel extends JPanel
         easy.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         easy.setBackground(Color.BLACK);
         easy.setForeground(BUTTON_COLOR);
-        easy.addActionListener(e->maze.updateMaze(10,10));
+        easy.addActionListener(e->maze.renderNewMaze(10,10));
 
         normal = new JButton("NORMAL");
         normal.setFocusPainted(false);
         normal.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         normal.setBackground(Color.BLACK);
         normal.setForeground(BUTTON_COLOR);
-        normal.addActionListener(e->maze.updateMaze(25,25));
+        normal.addActionListener(e->maze.renderNewMaze(25,25));
 
         hard = new JButton("HARD");
         hard.setFocusPainted(false);
         hard.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         hard.setBackground(Color.BLACK);
         hard.setForeground(BUTTON_COLOR);
-        hard.addActionListener(e->maze.updateMaze(50,50));
+        hard.addActionListener(e->maze.renderNewMaze(50,50));
 
         start = new JButton("START");
         start.setFocusPainted(false);

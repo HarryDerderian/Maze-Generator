@@ -117,7 +117,7 @@ public class MazePanel extends JPanel
         
     }
 
-    public void updateMaze(int rows, int columns)
+    public void renderNewMaze(int rows, int columns)
     {
         maze = new Maze(getWidth(), getHeight(), rows, columns);
         graph = maze.getGraph();
