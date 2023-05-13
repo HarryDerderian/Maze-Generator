@@ -6,16 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.HashSet;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -39,6 +33,11 @@ public class MazePanel extends JPanel
     private HashSet<Vertex> path;
     private Vertex currentPos;
 
+    // ACTION COMMANDS
+    private final MoveUP UP_COMMAND = new MoveUP();
+    private final MoveDown DOWN_COMMAND = new MoveDown();
+    private final MoveLeft LEFT_COMMAND = new MoveLeft();
+    private final MoveRight RIGHT_COMMAND = new MoveRight();
 
 
     public MazePanel(int width, int height)
@@ -50,76 +49,22 @@ public class MazePanel extends JPanel
 
     private void buildKeyBinding()
     {
-        KeyStroke w = KeyStroke.getKeyStroke(KeyEvent.VK_W, 0);
-        KeyStroke s = KeyStroke.getKeyStroke(KeyEvent.VK_S, 0);
-        KeyStroke a = KeyStroke.getKeyStroke(KeyEvent.VK_A, 0);
-        KeyStroke d = KeyStroke.getKeyStroke(KeyEvent.VK_D, 0);
-        getInputMap().put(w, "moveUp");
-        getInputMap().put(s,"moveDown");
-        getInputMap().put(a,"moveLeft");
-        getInputMap().put(d,"moveRight");
+        getInputMap().put(KeyStroke.getKeyStroke("W"), "moveUp");
+        getInputMap().put(KeyStroke.getKeyStroke("UP"), "moveUp");
 
-       
-        getActionMap().put("moveUp", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(graph == null || currentPos == null)
-                return;
-                if(currentPos.hasUpWall())
-                return;
+        getInputMap().put(KeyStroke.getKeyStroke("S"),"moveDown");
+        getInputMap().put(KeyStroke.getKeyStroke("DOWN"),"moveDown");
 
-                currentPos = currentPos.getUp();
-                if(path != null)
-                updatePath();
-                
-                repaint();
-            }});
-            getActionMap().put("moveDown", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(graph == null || currentPos == null)
-                return;
-                if(currentPos.hasDownWall())
-                return;
-
-                currentPos = currentPos.getDown();
-                if(path != null)
-                updatePath();
-                
-                repaint();
-            }});
-            getActionMap().put("moveLeft", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(graph == null || currentPos == null)
-                return;
-                if(currentPos.hasLeftWall())
-                return;
-
-                currentPos = currentPos.getLeft();
-                if(path != null)
-                updatePath();
-
-                repaint();
-            }});
-        getActionMap().put("moveRight", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(graph == null || currentPos == null)
-                return;
-                if(currentPos.hasRightWall())
-                return;
-
-                currentPos = currentPos.getRight();
-                if(path != null)
-                updatePath();
-                repaint();
-            }});
-            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        getInputMap().put(KeyStroke.getKeyStroke("A"),"moveLeft");
+        getInputMap().put(KeyStroke.getKeyStroke("LEFT"),"moveLeft");
+        
+        getInputMap().put(KeyStroke.getKeyStroke("D"),"moveRight");
+        getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),"moveRight");
+        
+        getActionMap().put("moveUp", UP_COMMAND);
+        getActionMap().put("moveDown", DOWN_COMMAND);
+        getActionMap().put("moveLeft", LEFT_COMMAND);
+        getActionMap().put("moveRight", RIGHT_COMMAND);
     }
 
     private void buildBackground()
@@ -250,5 +195,77 @@ public class MazePanel extends JPanel
         // Drawing path from start to end:
         if(path!= null)
             drawPath((Graphics2D)g);
+    }
+
+    private class MoveUP extends AbstractAction
+    {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            if(graph == null || currentPos == null)
+            return;
+            if(currentPos.hasUpWall())
+            return;
+
+            currentPos = currentPos.getUp();
+            if(path != null)
+            updatePath();
+
+            repaint();
+        }
+    }
+
+    private class MoveDown extends AbstractAction
+    {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            if(graph == null || currentPos == null)
+            return;
+            if(currentPos.hasDownWall())
+            return;
+
+            currentPos = currentPos.getDown();
+            if(path != null)
+            updatePath();
+
+            repaint();
+        }
+    }
+
+    private class MoveRight extends AbstractAction
+    {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            if(graph == null || currentPos == null)
+            return;
+            if(currentPos.hasRightWall())
+            return;
+
+            currentPos = currentPos.getRight();
+            if(path != null)
+            updatePath();
+
+            repaint();
+        }
+    }
+
+    private class MoveLeft extends AbstractAction
+    {
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            if(graph == null || currentPos == null)
+            return;
+            if(currentPos.hasLeftWall())
+            return;
+
+            currentPos = currentPos.getLeft();
+            if(path != null)
+            updatePath();
+
+            repaint();
+        }
     }
 }

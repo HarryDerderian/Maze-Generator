@@ -218,10 +218,6 @@ public class Maze
 
     public HashSet<Vertex> findPath(Vertex start)
     {
-        if(path != null){
-            path = null;
-            return path;
-        }
         vis = new HashSet<Vertex>();
         path = new HashSet<>();
         path.add(start);
