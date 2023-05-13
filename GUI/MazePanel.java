@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.HashSet;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -25,6 +26,12 @@ public class MazePanel extends JPanel
     private final Color WALL_COLOR = Color.CYAN;
     private final Color PATH_COLOR = Color.GREEN;
 
+    // ACTION COMMANDS
+    private final MoveUP UP_COMMAND = new MoveUP();
+    private final MoveDown DOWN_COMMAND = new MoveDown();
+    private final MoveLeft LEFT_COMMAND = new MoveLeft();
+    private final MoveRight RIGHT_COMMAND = new MoveRight();
+
     private Image background;
     private Maze maze;
     private Graph graph;
@@ -32,12 +39,6 @@ public class MazePanel extends JPanel
     private int cellHeight;
     private HashSet<Vertex> path;
     private Vertex currentPos;
-
-    // ACTION COMMANDS
-    private final MoveUP UP_COMMAND = new MoveUP();
-    private final MoveDown DOWN_COMMAND = new MoveDown();
-    private final MoveLeft LEFT_COMMAND = new MoveLeft();
-    private final MoveRight RIGHT_COMMAND = new MoveRight();
 
 
     public MazePanel(int width, int height)
@@ -49,17 +50,17 @@ public class MazePanel extends JPanel
 
     private void buildKeyBinding()
     {
-        getInputMap().put(KeyStroke.getKeyStroke("W"), "moveUp");
-        getInputMap().put(KeyStroke.getKeyStroke("UP"), "moveUp");
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "moveUp");
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "moveUp");
 
-        getInputMap().put(KeyStroke.getKeyStroke("S"),"moveDown");
-        getInputMap().put(KeyStroke.getKeyStroke("DOWN"),"moveDown");
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"),"moveDown");
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"),"moveDown");
 
-        getInputMap().put(KeyStroke.getKeyStroke("A"),"moveLeft");
-        getInputMap().put(KeyStroke.getKeyStroke("LEFT"),"moveLeft");
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("A"),"moveLeft");
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"),"moveLeft");
         
-        getInputMap().put(KeyStroke.getKeyStroke("D"),"moveRight");
-        getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),"moveRight");
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("D"),"moveRight");
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"),"moveRight");
         
         getActionMap().put("moveUp", UP_COMMAND);
         getActionMap().put("moveDown", DOWN_COMMAND);
@@ -125,7 +126,6 @@ public class MazePanel extends JPanel
         cellHeight = maze.getCellHeight();
         currentPos = graph.getVertex(0);
         repaint();
-        requestFocus();
     }
 
     private void drawPath(Graphics2D g)
@@ -162,9 +162,13 @@ public class MazePanel extends JPanel
 
     public void updatePath()
     {
+       if(path != null){
+        path = null;
+        repaint();
+        return;
+       }
        path = maze.findPath(currentPos);
        repaint();
-       requestFocus();
     }
 
     public void clear()
@@ -172,7 +176,6 @@ public class MazePanel extends JPanel
         maze = null;
         graph = null;
         path = null;
-        requestFocus();
     }
 
     @Override
@@ -193,7 +196,7 @@ public class MazePanel extends JPanel
         }
 
         // Drawing path from start to end:
-        if(path!= null)
+        if(path != null)
             drawPath((Graphics2D)g);
     }
 
@@ -209,8 +212,7 @@ public class MazePanel extends JPanel
 
             currentPos = currentPos.getUp();
             if(path != null)
-            updatePath();
-
+            path = maze.findPath(currentPos);
             repaint();
         }
     }
@@ -227,8 +229,7 @@ public class MazePanel extends JPanel
 
             currentPos = currentPos.getDown();
             if(path != null)
-            updatePath();
-
+            path = maze.findPath(currentPos);
             repaint();
         }
     }
@@ -245,8 +246,7 @@ public class MazePanel extends JPanel
 
             currentPos = currentPos.getRight();
             if(path != null)
-            updatePath();
-
+            path = maze.findPath(currentPos);
             repaint();
         }
     }
@@ -263,8 +263,7 @@ public class MazePanel extends JPanel
 
             currentPos = currentPos.getLeft();
             if(path != null)
-            updatePath();
-
+            path = maze.findPath(currentPos);
             repaint();
         }
     }
