@@ -124,6 +124,7 @@ public class MazePanel extends JPanel
         cellWidth = maze.getCellWidth();
         cellHeight = maze.getCellHeight();
         currentPos = graph.getVertex(0);
+        path = null;
         repaint();
     }
 
@@ -200,6 +201,8 @@ public class MazePanel extends JPanel
         if(path != null)
             drawPath((Graphics2D)g);
     }
+
+    // Keyboard control logic:
 
     private class MoveUP extends AbstractAction
     {
