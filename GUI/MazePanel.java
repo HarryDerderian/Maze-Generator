@@ -192,9 +192,9 @@ public class MazePanel extends JPanel
         // Drawing of the maze:
         if(graph != null)
         {
+            drawMaze((Graphics2D)g); // Maze
             drawCurrentPos(g); // Start Vertex 
             drawEnd(g);   // End Vertex
-            drawMaze((Graphics2D)g); // Maze
         }
 
         // Drawing path from start to end:
