@@ -3,7 +3,6 @@ package Maze;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 import WeightDiGraph.Edge;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Stack;
 
@@ -209,7 +208,7 @@ public class Maze
         Vertex target = graph.getLast();
         int targetNum = target.getId();
         
-        while(!visited[targetNum])
+        while(!visited[targetNum]) 
         {
             Vertex next = randomUnvisitedAdjacent(current, visited);
             if(next != null)
