@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.HashSet;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
