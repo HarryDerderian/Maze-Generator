@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.HashSet;
+import java.util.Stack;
+
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -36,7 +38,7 @@ public class MazePanel extends JPanel
     private Graph graph;
     private int cellWidth;
     private int cellHeight;
-    private HashSet<Vertex> path;
+    private Stack<Vertex> path;
     private Vertex currentPos;
 
 
@@ -165,7 +167,7 @@ public class MazePanel extends JPanel
       if(graph == null)
             return; // (No graph) -> (No Maze to navigate).
       else if(path == null)
-            path = maze.findPath(currentPos);
+            path = maze.pathFinderDFS(currentPos);
       else if(path != null)
             path = null; // clear path, (user clicked with already displayed path)
       
@@ -213,7 +215,7 @@ public class MazePanel extends JPanel
                 return;
             currentPos = currentPos.getUp();
             if(path != null)
-                path = maze.findPath(currentPos);
+                path = maze.pathFinderDFS(currentPos);
             repaint();
         }
     }
@@ -227,7 +229,7 @@ public class MazePanel extends JPanel
                return;
             currentPos = currentPos.getDown();
             if(path != null)
-                path = maze.findPath(currentPos);
+                path = maze.pathFinderDFS(currentPos);
             repaint();
         }
     }
@@ -241,7 +243,7 @@ public class MazePanel extends JPanel
                return;
             currentPos = currentPos.getRight();
             if(path != null)
-                path = maze.findPath(currentPos);
+                path = maze.pathFinderDFS(currentPos);
             repaint();
         }
     }
@@ -254,7 +256,7 @@ public class MazePanel extends JPanel
                return;
             currentPos = currentPos.getLeft();
             if(path != null)
-                path = maze.findPath(currentPos);
+                path = maze.pathFinderDFS(currentPos);
             repaint();
         }
     }

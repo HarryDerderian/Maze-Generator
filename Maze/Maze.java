@@ -16,7 +16,6 @@ public class Maze
     private int height;
     private int cellWidth;
     private int cellHeight;
-    private HashSet<Vertex> startToEnd;
 
     public Maze(int mazeWidth, int mazeHeight, int mazeColumns, int mazeRows)
     {
@@ -202,36 +201,29 @@ public class Maze
         }
     }
 
-    public HashSet<Vertex> findPath(Vertex start)
+     public Stack<Vertex> pathFinderDFS(Vertex current)
     {
         boolean[] visited = new boolean[graph.totalVerticies()];
-        visited[start.getId()] = true;
-        startToEnd = new HashSet<>();
-        startToEnd.add(start);
+        Stack<Vertex> path = new Stack<>();
+        visited[current.getId()] = true;
         Vertex target = graph.getLast();
-        pathFinderDFS(start,target, visited);
-        return startToEnd;
-    }
-    
-    Vertex pathFinderDFS(Vertex current, Vertex target, boolean[] visited)
-    {
-        if(target.getId() == current.getId())
-        return current;
-
-        for(Vertex v : graph.getAdjacent(current)){
-            if(visited[target.getId()])
-            break;
-            if(!visited[v.getId()])
+        int targetNum = target.getId();
+        
+        while(!visited[targetNum])
+        {
+            Vertex next = randomUnvisitedAdjacent(current, visited);
+            if(next != null)
             {
-                visited[v.getId()] = true;
-                Vertex temp = pathFinderDFS(v, target, visited);
-                if(temp != null)
-                startToEnd.add(temp);
+                visited[next.getId()] = true;
+                path.push(current);
+                current = next;
+            }
+            else
+            {
+                current = path.pop();
             }
         }
-        if(visited[target.getId()])
-        return current;
-        else
-        return null;
+        path.push(target);
+        return path;
     }
 }
