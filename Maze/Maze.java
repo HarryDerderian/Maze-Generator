@@ -104,13 +104,12 @@ public class Maze
     
     private void createMaze()
     {
-        Vertex startVertex = graph.getRandomVertex();
+        Vertex current = graph.getRandomVertex();
         Stack<Vertex> previous = new Stack<>();
         boolean[] visited = new boolean[graph.totalVerticies()];
-        visited[startVertex.getId()] = true;
+        visited[current.getId()] = true;
         int visitedVertices = 1;
         int totalVertices = graph.totalVerticies();
-        Vertex current = startVertex;
 
         while(visitedVertices < totalVertices)
             {
