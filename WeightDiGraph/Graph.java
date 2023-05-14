@@ -138,17 +138,22 @@ public class Graph
 
     public LinkedList<Vertex> getAdjacent(Vertex v){
         LinkedList<Vertex> adjacentVertices = new LinkedList<>();
-        if(vertexAndEdges.containsKey(v)){
-            if(v.getRight() != null){
+        if(vertexAndEdges.containsKey(v))
+        {
+            if(v.getRight() != null)
+            {
                 adjacentVertices.addLast(v.getRight());
             }
-            if(v.getDown() != null){
+            if(v.getDown() != null)
+            {
                 adjacentVertices.addLast(v.getDown());
             }
-            if(v.getLeft() != null){
+            if(v.getLeft() != null)
+            {
                 adjacentVertices.addLast(v.getLeft());
             }
-            if(v.getUp() != null){
+            if(v.getUp() != null)
+            {
                 adjacentVertices.addLast(v.getUp());
             }
         }

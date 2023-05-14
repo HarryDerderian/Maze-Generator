@@ -203,7 +203,7 @@ public class MazePanel extends JPanel
     }
 
     // Keyboard control logic:
-
+    
     private class MoveUP extends AbstractAction
     {
         @Override

@@ -3,6 +3,7 @@ package WeightDiGraph;
 public class Vertex 
 {
 
+    
     private int id;
     private int x;
     private int y;
@@ -32,6 +33,7 @@ public class Vertex
         right = null;
         left = null;
     }
+
 
     public int getColumn() {
         return column;

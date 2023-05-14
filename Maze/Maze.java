@@ -4,10 +4,8 @@ import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 import WeightDiGraph.Edge;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.Stack;
-import java.util.TreeMap;
 
 public class Maze 
 {
@@ -18,11 +16,7 @@ public class Maze
     private int height;
     private int cellWidth;
     private int cellHeight;
-
-
-    //TODO: better encapsulate:
-    private HashSet<Vertex> vis;
-    private HashSet<Vertex> path;
+    private HashSet<Vertex> startToEnd;
 
     public Maze(int mazeWidth, int mazeHeight, int mazeColumns, int mazeRows)
     {
@@ -35,7 +29,7 @@ public class Maze
         graph = new Graph();
         
         initializeGrid();
-        makeMaze();
+        createMaze();
     }
     
     public Graph getGraph() 
@@ -108,75 +102,81 @@ public class Maze
         return random.nextInt(max - min + 1) + min;
     }
     
-    private void breakWalls(Vertex a, Vertex b, LinkedList<Vertex> list)
+    private void createMaze()
     {
-     
-            int rightIndex = list.indexOf(a.getRight());
-            int leftIndex = list.indexOf(a.getLeft());
-            int downIndex = list.indexOf(a.getDown());
-            int upIndex = list.indexOf(a.getUp());
-            int max = Math.max(Math.max(rightIndex, leftIndex), Math.max(downIndex, upIndex));
-            if(max == -1) return;
-            else if(max == rightIndex){
-                a.removeRightWall();
-                if(a.getRight() != null){
-                    a.getRight().removeLeftWall();
-                }
-            }
-            else if(max == leftIndex){
-                a.removeLeftWall();
-                if(a.getLeft() != null){
-                    a.getLeft().removeRightWall();
-                }
-            }
-            else if(max == downIndex){
-                a.remvoeDownWall();
-                if(a.getDown() != null){
-                    a.getDown().removeUpWall();
-                }
-            }
-            else{
-                a.removeUpWall();
-                if(a.getUp() != null){
-                    a.getUp().remvoeDownWall();
-                }
-            }
-    }
-
-    public void makeMaze(){ 
-        Stack<Vertex> stack = new Stack<>();
-        LinkedList<Vertex> visited = new LinkedList<>();
-
         Vertex startVertex = graph.getRandomVertex();
-        stack.push(startVertex);
+        Stack<Vertex> previous = new Stack<>();
+        boolean[] visited = new boolean[graph.totalVerticies()];
+        visited[startVertex.getId()] = true;
+        int visitedVertices = 1;
+        int totalVertices = graph.totalVerticies();
         Vertex current = startVertex;
-        while(!stack.isEmpty()){
-            Vertex temp = current;
-            current = stack.pop();
-            if(!visited.contains(current)){
 
-                breakWalls(current, temp, visited);
-                visited.addLast(current);
-                TreeMap<Integer, Vertex> tree = new TreeMap<Integer, Vertex>();
-                for(Vertex v : graph.getAdjacent(current) ){
-                    if(!visited.contains(v)){
-                        graph.getEdges(current).forEach((Edge e)->{
-                            if(e.getDest().getId() == v.getId()){
-                                tree.put(e.getWeight(), v);
-                            }
-                        });
-                    }
+        while(visitedVertices < totalVertices)
+            {
+                Vertex next = randomUnvisitedAdjacent(current, visited);
+                if(next != null)
+                {
+                    connectCells(current, next);
+                    previous.push(current);
+                    current = next;
+                    visited[current.getId()] = true;
+                    visitedVertices++;
                 }
-                tree.forEach((Integer i, Vertex v)->stack.push(v));
+                else
+                {
+                    current = previous.pop();
+                }
+            }
+
+        graph.getVertices().forEach(vertex->rectify(vertex));
+    }
+    
+    private void connectCells(Vertex v1, Vertex v2)
+    {
+        if(v1.getColumn() == v2.getColumn())
+        {
+            if(v1.getId() > v2.getId())
+            {
+                v1.removeUpWall();
+                v2.remvoeDownWall();
+            }
+            else
+            {
+                v1.remvoeDownWall();
+                v2.removeUpWall();
             }
         }
-        removeInvalidEdges();
-
+        else 
+        {
+            if(v1.getId() > v2.getId())
+            {
+                v1.removeLeftWall();
+                v2.removeRightWall();
+            }
+            else
+            {
+                v1.removeRightWall();
+                v2.removeLeftWall();
+            }
+        }
     }
 
-    private void removeInvalidEdges()
+    private Vertex randomUnvisitedAdjacent(Vertex v, boolean[] visisted)
     {
-        graph.getVertices().forEach(vertex->rectify(vertex));
+        int weight = -1;
+        Vertex returnVertex = null;
+        for(Edge edge : graph.getEdges(v))
+        {
+            Vertex currentVertex = edge.getDest();
+            int currentWeight = edge.getWeight();
+            if(!visisted[currentVertex.getId()] && weight < currentWeight)
+            {
+                returnVertex = currentVertex;
+                weight = currentWeight;
+            }
+        }
+        return returnVertex;
     }
 
     private void rectify(Vertex v)
@@ -205,31 +205,32 @@ public class Maze
 
     public HashSet<Vertex> findPath(Vertex start)
     {
-        vis = new HashSet<Vertex>();
-        path = new HashSet<>();
-        path.add(start);
-        vis.add(start);
-        DFS(start,graph.getLast());
-        return path;
+        boolean[] visited = new boolean[graph.totalVerticies()];
+        visited[start.getId()] = true;
+        startToEnd = new HashSet<>();
+        startToEnd.add(start);
+        Vertex target = graph.getLast();
+        pathFinderDFS(start,target, visited);
+        return startToEnd;
     }
     
-    Vertex DFS(Vertex current, Vertex target)
+    Vertex pathFinderDFS(Vertex current, Vertex target, boolean[] visited)
     {
         if(target.getId() == current.getId())
         return current;
 
         for(Vertex v : graph.getAdjacent(current)){
-            if(vis.contains(target))
+            if(visited[target.getId()])
             break;
-            if(!vis.contains(v))
+            if(!visited[v.getId()])
             {
-                vis.add(v);
-                Vertex temp = DFS(v, target);
+                visited[v.getId()] = true;
+                Vertex temp = pathFinderDFS(v, target, visited);
                 if(temp != null)
-                path.add(temp);
+                startToEnd.add(temp);
             }
         }
-        if(vis.contains(target))
+        if(visited[target.getId()])
         return current;
         else
         return null;
