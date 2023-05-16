@@ -15,6 +15,7 @@ public class Maze
     private int height;
     private int cellWidth;
     private int cellHeight;
+    private Vertex targetVertex;
 
     public Maze(int mazeWidth, int mazeHeight, int mazeColumns, int mazeRows)
     {
@@ -28,13 +29,20 @@ public class Maze
         
         initializeGrid();
         createMaze();
+        
+        do
+        targetVertex = graph.getRandomVertex();
+        while(targetVertex.equals(graph.getVertex(0))); 
     }
-    
+    public Vertex getTarget()
+    {
+        return targetVertex;
+    }
     public Graph getGraph() 
     {
         return graph;
     }
-    
+
     public int getNumRows() {
         return numRows;
     }
@@ -213,8 +221,7 @@ public class Maze
         boolean[] visited = new boolean[graph.totalVerticies()];
         Stack<Vertex> path = new Stack<>();
         visited[current.getId()] = true;
-        Vertex target = graph.getLast();
-        int targetNum = target.getId();
+        int targetNum = targetVertex.getId();
         
         while(!visited[targetNum]) 
         {
@@ -230,7 +237,7 @@ public class Maze
                 current = path.pop();
             }
         }
-        path.push(target);
+        path.push(targetVertex);
         return path;
     }
 }

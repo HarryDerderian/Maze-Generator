@@ -84,13 +84,13 @@ public class MazePanel extends JPanel
 
     private void drawCurrentPos(Graphics g)
     {
-        g.setColor(Color.GREEN);
+        g.setColor(Color.BLUE);
         g.fillRect(currentPos.getX(), currentPos.getY(), cellWidth, cellHeight);
     }
 
     private void drawEnd(Graphics g)
     {
-        Vertex last = graph.getLast();
+        Vertex last = maze.getTarget();
         g.setColor(Color.GREEN);
         g.fillRect(last.getX(), last.getY(), cellWidth, cellHeight);
     }
@@ -192,6 +192,10 @@ public class MazePanel extends JPanel
         if(background != null)
             g.drawImage(background, 0, 0, null);
         
+        // Drawing path from start to end:
+        if(path != null)
+            drawPath((Graphics2D)g);
+            
         // Drawing of the maze:
         if(graph != null)
         {
@@ -200,14 +204,12 @@ public class MazePanel extends JPanel
             drawEnd(g);   // End Vertex
         }
 
-        // Drawing path from start to end:
-        if(path != null)
-            drawPath((Graphics2D)g);
+
     }
 
     private boolean checkWin()
     {
-        if(currentPos.getId() == graph.getLast().getId())
+        if(currentPos.equals(maze.getTarget()))
         {
             score.updateScore();
             renderNewMaze(maze.getNumRows(), maze.getNumColumns());
