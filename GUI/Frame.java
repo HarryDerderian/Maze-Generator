@@ -9,22 +9,27 @@ public class Frame extends JFrame implements ComponentListener
     private final String TITLE = "MAZE GENERATOR";
     private final int MAZE_PANEL_HEIGHT = 900;
     private final int MAZE_PANEL_WIDTH = 1200;
-    private final int BUTTON_PANEL_WIDTH = 300;
+    private final int SIDE_PANEL_WIDTH = 300;
     private MazePanel mazePanel;
     private ButtonPanel buttonPanel;
+    private ScorePanel scorePanel;
 
     public Frame()
     {
         setTitle(TITLE);
-        mazePanel = new MazePanel(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT);
-        add(mazePanel, BorderLayout.CENTER);
-        buttonPanel = new ButtonPanel(BUTTON_PANEL_WIDTH, MAZE_PANEL_HEIGHT, mazePanel);
-        add(buttonPanel, BorderLayout.EAST);
+        scorePanel = new ScorePanel(SIDE_PANEL_WIDTH, MAZE_PANEL_HEIGHT);
+        add(scorePanel,BorderLayout.WEST);
         pack();
-        setVisible(true);
+        mazePanel = new MazePanel(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT, scorePanel);
+        add(mazePanel, BorderLayout.CENTER);
+        buttonPanel = new ButtonPanel(SIDE_PANEL_WIDTH, MAZE_PANEL_HEIGHT, mazePanel);
+        add(buttonPanel, BorderLayout.EAST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addComponentListener(this);
+        pack();
         setLocationRelativeTo(null);
+        setVisible(true);
+        
     }
 
     @Override

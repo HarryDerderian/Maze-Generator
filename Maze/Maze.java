@@ -34,6 +34,14 @@ public class Maze
     {
         return graph;
     }
+    
+    public int getNumRows() {
+        return numRows;
+    }
+
+    public int getNumColumns() {
+        return numColumns;
+    }
 
     public int getCellHeight()
     {

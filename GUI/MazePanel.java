@@ -39,13 +39,15 @@ public class MazePanel extends JPanel
     private int cellHeight;
     private Stack<Vertex> path;
     private Vertex currentPos;
+    private ScorePanel score;
 
 
-    public MazePanel(int width, int height)
+    public MazePanel(int width, int height, ScorePanel score)
     {
         setPreferredSize(new Dimension(width, height));
         buildBackground();
         buildKeyBinding();
+        this.score = score;
     }
 
     private void buildKeyBinding()
@@ -203,6 +205,16 @@ public class MazePanel extends JPanel
             drawPath((Graphics2D)g);
     }
 
+    private boolean checkWin()
+    {
+        if(currentPos.getId() == graph.getLast().getId())
+        {
+            score.updateScore();
+            renderNewMaze(maze.getNumRows(), maze.getNumColumns());
+            return true;
+        }
+        return false;
+    }
     // Keyboard control logic:
     
     private class MoveUP extends AbstractAction
@@ -213,6 +225,7 @@ public class MazePanel extends JPanel
             if(graph == null || currentPos.hasUpWall())
                 return;
             currentPos = currentPos.getUp();
+            checkWin();
             if(path != null)
                 path = maze.pathFinderDFS(currentPos);
             repaint();
@@ -227,6 +240,7 @@ public class MazePanel extends JPanel
             if(graph == null || currentPos.hasDownWall())
                return;
             currentPos = currentPos.getDown();
+            checkWin();
             if(path != null)
                 path = maze.pathFinderDFS(currentPos);
             repaint();
@@ -241,6 +255,7 @@ public class MazePanel extends JPanel
             if(graph == null || currentPos.hasRightWall())
                return;
             currentPos = currentPos.getRight();
+            checkWin();
             if(path != null)
                 path = maze.pathFinderDFS(currentPos);
             repaint();
@@ -254,6 +269,7 @@ public class MazePanel extends JPanel
             if(graph == null || currentPos.hasLeftWall())
                return;
             currentPos = currentPos.getLeft();
+            checkWin();
             if(path != null)
                 path = maze.pathFinderDFS(currentPos);
             repaint();
