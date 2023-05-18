@@ -5,8 +5,11 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
@@ -22,7 +25,7 @@ public class MazePanel extends JPanel
 {
     private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/background.jpg";
     private final int MAZE_WALL_WIDTH = 7; 
-    private final float PATH_LINE_WIDTH = (float) 0.25;
+    private final float PATH_LINE_WIDTH = (float) 2;
     private final Color WALL_COLOR = Color.LIGHT_GRAY;
     private final Color PATH_COLOR = Color.GREEN;
 
@@ -37,7 +40,9 @@ public class MazePanel extends JPanel
     private Graph graph;
     private int cellWidth;
     private int cellHeight;
-    private Stack<Vertex> path;
+    private Collection<Vertex> path;
+    private Collection<Vertex> pathBFS;
+    private Collection<Vertex> pathDFS;
     private Vertex currentPos;
     private ScorePanel score;
 
@@ -128,7 +133,23 @@ public class MazePanel extends JPanel
         cellHeight = maze.getCellHeight();
         currentPos = graph.getVertex(0);
         path = null;
+        pathBFS = null;
+        pathDFS = null;
         repaint();
+    }
+
+    private void drawBFS(Graphics2D g)
+    {
+        g.setColor(Color.RED);
+        g.setStroke(new BasicStroke(PATH_LINE_WIDTH));
+        pathBFS.forEach(vertex->drawValidConnections(vertex, g, pathBFS));
+    }
+
+    private void drawDFS(Graphics2D g)
+    {
+        g.setColor(Color.RED);
+        g.setStroke(new BasicStroke(PATH_LINE_WIDTH));
+        pathDFS.forEach(vertex->drawValidConnections(vertex, g, pathDFS));
     }
 
     private void drawPath(Graphics2D g)
@@ -136,14 +157,15 @@ public class MazePanel extends JPanel
         g.setColor(PATH_COLOR);
         g.setStroke(new BasicStroke(PATH_LINE_WIDTH));
         // Draw lines connection all adjacent vertices leading to end.
-        path.forEach(vertex->drawValidConnections(vertex, g));
+        path.forEach(vertex->drawValidConnections(vertex, g,path));
     }
 
-    private void drawValidConnections(Vertex vertex, Graphics2D g)
+    private void drawValidConnections(Vertex vertex, Graphics2D g, Collection<Vertex> list)
     {
         // If an adjacent is also in the path draw lines connection them.
+        
         graph.getAdjacent(vertex).forEach(adjacentVertex->{
-            if(path.contains(adjacentVertex))
+            if(list.contains(adjacentVertex))
             drawConnection(vertex, adjacentVertex, g);
         });
     }
@@ -163,16 +185,46 @@ public class MazePanel extends JPanel
         g.drawLine(startX, startY, endX, endY);
     }
 
+    public void updateBFS()
+    {
+        if(graph == null)
+            return; // (No graph) -> (No Maze to navigate).
+        else if(pathBFS == null){
+            pathBFS = maze.pathFidnerBFS(currentPos);
+            pathDFS = null;
+            updatePath();
+        }
+           
+        else if(pathBFS != null){
+            pathBFS = null; // clear path, (user clicked with already displayed path)
+            path = null;
+        }
+        
+        repaint();
+    }
+
+    public void updateDFS()
+    {
+    if(graph == null)
+        return; // (No graph) -> (No Maze to navigate).
+        
+    else if(pathDFS == null){
+        pathDFS = maze.pathFinderDFS(currentPos);
+        pathBFS = null;
+            updatePath();
+        }
+    else if(pathDFS != null){
+        pathDFS = null; // clear path, (user clicked with already displayed path)
+        path = null;
+    }
+        repaint();
+    }
+
     public void updatePath()
     {
-      if(graph == null)
-            return; // (No graph) -> (No Maze to navigate).
-      else if(path == null)
-            path = maze.pathFinderDFS(currentPos);
-      else if(path != null)
-            path = null; // clear path, (user clicked with already displayed path)
       
-      repaint();
+            path = maze.getPath(currentPos);
+
     }
 
     public void clear()
@@ -180,8 +232,12 @@ public class MazePanel extends JPanel
         maze = null;
         graph = null;
         path = null;
+        pathDFS = null;
+        pathBFS = null;
         repaint();
     }
+
+
 
     @Override
     protected void paintComponent(Graphics g) 
@@ -191,6 +247,19 @@ public class MazePanel extends JPanel
         // Drawing background image:
         if(background != null)
             g.drawImage(background, 0, 0, null);
+        
+
+        // Drawing DFS traversal
+        if(pathDFS != null)
+        {
+            drawDFS((Graphics2D)g);
+        }
+
+        // Drawing BFS traversal
+        if(pathBFS != null)
+        {
+            drawBFS((Graphics2D)g);
+        }
         
         // Drawing path from start to end:
         if(path != null)
@@ -205,6 +274,13 @@ public class MazePanel extends JPanel
         }
 
 
+    }
+    private void updatePaths()
+    {
+        if(path != null)
+                path = maze.getPath(currentPos);
+        if(pathBFS != null)
+            pathBFS = maze.pathFidnerBFS(currentPos);
     }
 
     private boolean checkWin()
@@ -228,8 +304,7 @@ public class MazePanel extends JPanel
                 return;
             currentPos = currentPos.getUp();
             checkWin();
-            if(path != null)
-                path = maze.pathFinderDFS(currentPos);
+            updatePaths();
             repaint();
         }
     }
@@ -243,8 +318,7 @@ public class MazePanel extends JPanel
                return;
             currentPos = currentPos.getDown();
             checkWin();
-            if(path != null)
-                path = maze.pathFinderDFS(currentPos);
+            updatePaths();
             repaint();
         }
     }
@@ -258,8 +332,7 @@ public class MazePanel extends JPanel
                return;
             currentPos = currentPos.getRight();
             checkWin();
-            if(path != null)
-                path = maze.pathFinderDFS(currentPos);
+            updatePaths();
             repaint();
         }
     }
@@ -272,8 +345,7 @@ public class MazePanel extends JPanel
                return;
             currentPos = currentPos.getLeft();
             checkWin();
-            if(path != null)
-                path = maze.pathFinderDFS(currentPos);
+            updatePaths();
             repaint();
         }
     }

@@ -3,6 +3,9 @@ package Maze;
 import WeightDiGraph.Graph;
 import WeightDiGraph.Vertex;
 import WeightDiGraph.Edge;
+
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
@@ -216,7 +219,66 @@ public class Maze
         }
     }
 
-     public Stack<Vertex> pathFinderDFS(Vertex current)
+    // returns a collection that contains all vertices in a BFS until target reached.
+    public LinkedList<Vertex> pathFidnerBFS(Vertex start)
+    {
+        LinkedList<Vertex> path = new LinkedList<>();
+        Queue<Vertex> queue = new LinkedList<>();
+        boolean[] visited = new boolean[graph.totalVerticies()];
+        visited[start.getId()] = true;
+        queue.add(start);
+        int targetId = targetVertex.getId();
+        while(!queue.isEmpty() && !visited[targetId])
+        {
+            Vertex current = queue.poll();
+            path.add(current);
+            graph.getAdjacent(current).forEach(vertex->{
+                if(!visited[vertex.getId()])
+                {
+                    queue.add(vertex);
+                    visited[vertex.getId()] = true;
+                }
+            });
+        }
+        while(!queue.isEmpty())
+        {
+            path.add(queue.poll());
+        }
+        return path;
+    }
+
+    // returns a collection of DFS traversal.
+    public LinkedList<Vertex> pathFinderDFS(Vertex current)
+    {
+        LinkedList<Vertex> path = new LinkedList<>();    
+        boolean[] visited = new boolean[graph.totalVerticies()];
+        Stack<Vertex> previous = new Stack<>();
+        visited[current.getId()] = true;
+        int targetNum = targetVertex.getId();
+            
+            while(!visited[targetNum]) 
+            {
+                Vertex next = randomUnvisitedAdjacent(current, visited);
+                if(next != null)
+                {
+                    visited[next.getId()] = true;
+                    previous.push(current);
+                    current = next;
+                }
+                else
+                {
+                    path.add(current);
+                    current = previous.pop();
+                    
+                }
+            }
+            while(!previous.empty())
+            path.add(previous.pop());
+            return path;
+    }
+
+    // returns a collection only that contains only vertices that lead to end.
+    public Stack<Vertex> getPath(Vertex current)
     {
         boolean[] visited = new boolean[graph.totalVerticies()];
         Stack<Vertex> path = new Stack<>();

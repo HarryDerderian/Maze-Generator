@@ -62,13 +62,14 @@ public class ButtonPanel extends JPanel
         bfsButton.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         bfsButton.setBackground(Color.BLACK);
         bfsButton.setForeground(BUTTON_COLOR);
+        bfsButton.addActionListener(e->{maze.updateBFS();});
 
         dfsButton = new JButton("Depth first search (DFS)");
         dfsButton.setFocusPainted(false);
         dfsButton.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
         dfsButton.setBackground(Color.BLACK);
         dfsButton.setForeground(BUTTON_COLOR);
-        dfsButton.addActionListener(e->maze.updatePath());
+        dfsButton.addActionListener(e->maze.updateDFS());
 
         easy = new JButton("EASY");
         easy.setFocusPainted(false);
