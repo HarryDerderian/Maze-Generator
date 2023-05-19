@@ -258,7 +258,29 @@ public class Maze
             
             while(!visited[targetNum]) 
             {
-                Vertex next = randomUnvisitedAdjacent(current, visited);
+                Vertex next = null;
+                    // check right
+                    if(current.getRight()!= null && !visited[current.getRight().getId()])
+                    {
+                        next = current.getRight();
+                    }
+                    // chek down
+                    else if(current.getDown()!= null && !visited[current.getDown().getId()])
+                    {
+                        next = current.getDown();
+                    }
+                    // check left
+                    else if(current.getLeft()!= null && !visited[current.getLeft().getId()])
+                    {
+                        next = current.getLeft();
+                    }
+                    // check up
+                    else if(current.getUp()!= null && !visited[current.getUp().getId()])
+                    {
+                        next = current.getUp();
+                    }
+                    
+
                 if(next != null)
                 {
                     visited[next.getId()] = true;

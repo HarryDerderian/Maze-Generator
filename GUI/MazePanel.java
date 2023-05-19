@@ -281,6 +281,8 @@ public class MazePanel extends JPanel
                 path = maze.getPath(currentPos);
         if(pathBFS != null)
             pathBFS = maze.pathFidnerBFS(currentPos);
+        if(pathDFS != null)
+        pathDFS = maze.pathFinderDFS(currentPos);
     }
 
     private boolean checkWin()
