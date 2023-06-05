@@ -33,10 +33,9 @@ public class Maze
         graph = new Graph();
         initializeGrid();
         createMaze();
-        // TODO: fix, make look cleaner
-        do // ensures target vertex is not start vertex
+        do 
         targetVertex = graph.getRandomVertex();
-        while(targetVertex.equals(graph.getVertex(0))); 
+        while(targetVertex.equals(graph.getVertex(0))); // Vertex 0 is default start.
     }
 
     public Vertex getTarget()
