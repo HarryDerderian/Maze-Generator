@@ -2,18 +2,17 @@ package WeightDiGraph;
 
 public class Vertex 
 {
-
-    
     private int id;
     private int x;
     private int y;
     private int row;
     private int column;
-    private Vertex up;
-    private Vertex down;
-    private Vertex left;
-    private Vertex right;
-    private boolean[] walls; // [0]: up, [1]: down, [2]: left, [3]: right
+    private Vertex northVertex;
+    private Vertex southVertex;
+    private Vertex westVertex;
+    private Vertex eastVertex;
+    private boolean[] walls; // [0]: top wall, [1]: bottom wall, [2]: left wall, [3]: right wall
+    private Vertex[] adjacentVertices;
 
     public Vertex(int id, int x, int y, int row, int column)
     {
@@ -28,17 +27,19 @@ public class Vertex
         walls[2] = true;
         walls[3] = true;
 
-        up = null;
-        down = null;
-        right = null;
-        left = null;
+        adjacentVertices = new Vertex[4];
+        adjacentVertices[0] = eastVertex;
+        adjacentVertices[1] = southVertex;
+        adjacentVertices[2] = northVertex;
+        adjacentVertices[3] = westVertex;
     }
 
-
-    public int getColumn() {
+    public int getColumn() 
+    {
         return column;
     }
-    public int getRow() {
+    public int getRow() 
+    {
         return row;
     }
     public int getId()
@@ -62,87 +63,120 @@ public class Vertex
         this.x = x;
     }
 
-    public void setY(int y) {
+    public void setY(int y)
+    {
         this.y = y;
     }
-    public void setDown(Vertex down) {
-        this.down = down;
-      
-    }
-    
-    public void setLeft(Vertex left) {
-        this.left = left;
-        
+
+    public void setSouthVertex(Vertex south) 
+    {
+        southVertex = south;
+        adjacentVertices[1] = southVertex;
     }
 
-    public void setRight(Vertex right) {
-        this.right = right;
+    public void setWestVertex(Vertex west) 
+    {
+        westVertex = west;   
     }
 
-    public void setUp(Vertex up) {
-        this.up = up;
+    public void setEastVertex(Vertex east)
+    {
+        eastVertex = east;
     }
-    public void setNorthWall(Boolean b){
+
+    public void setNorthVertex(Vertex north) 
+    {
+        northVertex = north;
+    }
+
+    public void setNorthWall(Boolean b)
+    {
         walls[0] = b;
     }
-    public void setSouthWall(Boolean b){
+
+    public void setSouthWall(Boolean b)
+    {
         walls[1] = b;
     }
-    public void setEastWall(Boolean b){
+
+    public void setEastWall(Boolean b)
+    {
         walls[3] = b;
     }
-    public void setWestWall(Boolean b){
+
+    public void setWestWall(Boolean b)
+    {
         walls[2] = b;
     }
     
-
-    public boolean hasUpWall(){
+    public boolean hasUpWall()
+    {
         return walls[0];
     }
 
-    public boolean hasDownWall(){
+    public boolean hasDownWall()
+    {
         return walls[1];
     }
 
-    public boolean hasLeftWall(){
+    public boolean hasLeftWall()
+    {
         return walls[2];
     }
 
-    public boolean hasRightWall(){
+    public boolean hasRightWall()
+    {
         return walls[3];
     }
 
-    public void removeRightWall(){
+    public void removeRightWall()
+    {
         walls[3] = false;
     }
 
-    public void removeLeftWall(){
+    public void removeLeftWall()
+    {
         walls[2] = false;
     }
 
-    public void remvoeDownWall(){
+    public void remvoeDownWall()
+    {
         walls[1] = false;
     }
 
-    public void removeUpWall(){
+    public void removeUpWall()
+    {
         walls[0] = false;
     }
 
-    public Vertex getDown() {
-        return down;
+    public Vertex getSouthVertex()
+    {
+        return southVertex;
     }
-    public Vertex getLeft() {
-        return left;
+
+    public Vertex getWestVertex() 
+    {
+        return westVertex;
     }
-    public Vertex getRight() {
-        return right;
+
+    public Vertex getEastVertex()
+    {
+        return eastVertex;
     }
-    public Vertex getUp() {
-        return up;
+
+    public Vertex getNorthVertex()
+    {
+        return northVertex;
     }
     
+    public Vertex[] getAdjacent()
+    {
+        return adjacentVertices;
+    }
+
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) 
+    {
         if(obj.getClass() != this.getClass()) return false;
         Vertex v = (Vertex) obj;
         return id == v.id;

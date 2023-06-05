@@ -109,7 +109,7 @@ public class ButtonPanel extends JPanel
         constratins.insets = new Insets(40, 20,40, 20);
         constratins.ipady = 25;
 
-        // Nx1 matrix
+        // Nx1 matrix I.E. Row Vector
         constratins.gridx = 0; // column 1 (only column) 
         
         constratins.gridy = 0; // row 1

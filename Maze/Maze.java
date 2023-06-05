@@ -1,14 +1,14 @@
 package Maze;
 
-import WeightDiGraph.Graph;
-import WeightDiGraph.Vertex;
-import WeightDiGraph.Edge;
-
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
+import WeightDiGraph.Graph;
+import WeightDiGraph.Vertex;
 public class Maze 
 {
     private Graph graph;
@@ -19,6 +19,7 @@ public class Maze
     private int cellWidth;
     private int cellHeight;
     private Vertex targetVertex;
+    private Random random;
 
     public Maze(int mazeWidth, int mazeHeight, int mazeColumns, int mazeRows)
     {
@@ -28,29 +29,33 @@ public class Maze
         numRows = mazeRows;
         cellWidth = width / numColumns;
         cellHeight = height / numRows;
+        random = new Random();
         graph = new Graph();
-        
         initializeGrid();
         createMaze();
-        
-        do
+        // TODO: fix, make look cleaner
+        do // ensures target vertex is not start vertex
         targetVertex = graph.getRandomVertex();
         while(targetVertex.equals(graph.getVertex(0))); 
     }
+
     public Vertex getTarget()
     {
         return targetVertex;
     }
-    public Graph getGraph() 
+
+    public Graph getGraph()
     {
         return graph;
     }
 
-    public int getNumRows() {
+    public int getNumRows()
+    {
         return numRows;
     }
 
-    public int getNumColumns() {
+    public int getNumColumns()
+    {
         return numColumns;
     }
 
@@ -64,6 +69,12 @@ public class Maze
         return cellWidth;
     }
 
+    /**
+    * Creates a grid graph based on the specified number of rows and columns.
+    * Each vertex in the graph has a unique ID that corresponds to its row and column position.
+    * The ID is calculated as row * numColumns + column, where rows and columns start from 0.
+    * The top-left vertex has an ID of 0, and the bottom-right vertex has an ID of (numRows * numColumns - 1).
+    */
     private void initializeGrid()
     {
         for(int column = 0; column < numColumns; column++)
@@ -71,14 +82,21 @@ public class Maze
             for(int row = 0; row < numRows; row++) 
             {                            
                 int id = row * numColumns + column;
-                Vertex v = new Vertex(id, column * cellWidth, row * cellHeight, row, column);
+                int cordX = column * cellWidth;
+                int cordY = row * cellHeight;
+                Vertex v = new Vertex(id, cordX, cordY, row, column);
                 graph.addVertex(v);
             }
         }
-        // Connect each vertex to it's right, left, upper, lower.
         graph.getVertices().forEach(vertex->connectAdjacentCells(vertex));
     }
 
+    /**
+    * Creates edges from a Vertex to any vertices that are a single row above/below,
+    * or single column behind/ahead. Results in the vertex having edges connection it
+    * to its north, south, east, west.
+    * @param vertex will have edges created to its four adjacent neighbors
+    */
     private void connectAdjacentCells(Vertex vertex)
     {
         int row = vertex.getRow();
@@ -88,37 +106,35 @@ public class Maze
         if(row > 0) 
         {   // Connect to top vertex
             Vertex topVertex = graph.getVertex(vertexNum - numColumns);
-            graph.createEdge(vertex, topVertex, randomWeight());
-            vertex.setUp(topVertex);
+            graph.createEdge(vertex, topVertex, random.nextInt(4) + 1);
+            vertex.setNorthVertex(topVertex);
         }
         if(row < numRows -1) 
         {   // connect to bottom vertex
             Vertex bottomVertex = graph.getVertex(vertexNum + numColumns);
-            graph.createEdge(vertex, bottomVertex, randomWeight());
-            vertex.setDown(bottomVertex);
+            graph.createEdge(vertex, bottomVertex, random.nextInt(4) + 1);
+            vertex.setSouthVertex(bottomVertex);
         }
         if(column > 0) 
         {   // connect to left vertex
             Vertex leftVertex = graph.getVertex(vertexNum -1);
-            graph.createEdge(vertex, leftVertex, randomWeight());
-            vertex.setLeft(leftVertex);
+            graph.createEdge(vertex, leftVertex, random.nextInt(4) + 1);
+            vertex.setWestVertex(leftVertex);
         }
         if(column < numColumns -1) 
         {   // connect to right vertex 
             Vertex rightVertex = graph.getVertex(vertexNum +1);
-            graph.createEdge(vertex, rightVertex, randomWeight());
-            vertex.setRight(rightVertex);
+            graph.createEdge(vertex, rightVertex, random.nextInt(4) + 1);
+            vertex.setEastVertex(rightVertex);
         }
     }
 
-    private int randomWeight()
-    {
-        Random random = new Random();
-        int max = 4;
-        int min = 1;
-        return random.nextInt(max - min + 1) + min;
-    }
-    
+    /**
+     * Chooses a random starting vertex, proceeds to visit every vertex inside 
+     * the graph using a random direction dfs. Whenever a vertex is visited the 
+     * overlapping wall between it and the previous vertex is removed.
+     * Assumes graph is a grid-graph.
+     */
     private void createMaze()
     {
         Vertex current = graph.getRandomVertex();
@@ -148,9 +164,16 @@ public class Maze
         graph.getVertices().forEach(vertex->rectify(vertex));
     }
     
+    /**
+     * Connects two cells by removing their overlapping walls.
+     * Checks if the cells are in the same row or column based on 
+     * the positioning removes appropriate walls.
+     * @param v1 first vertex
+     * @param v2 second vertex
+     */
     private void connectCells(Vertex v1, Vertex v2)
     {
-        if(v1.getColumn() == v2.getColumn())
+        if(v1.getColumn() == v2.getColumn()) // same column
         {
             if(v1.getId() > v2.getId())
             {
@@ -163,9 +186,9 @@ public class Maze
                 v2.removeUpWall();
             }
         }
-        else 
+        else if(v1.getRow() == v2.getRow()) // same row
         {
-            if(v1.getId() > v2.getId())
+            if(v1.getId() > v2.getId()) 
             {
                 v1.removeLeftWall();
                 v2.removeRightWall();
@@ -178,49 +201,90 @@ public class Maze
         }
     }
 
-    private Vertex randomUnvisitedAdjacent(Vertex v, boolean[] visisted)
+    /**
+    * Finds and returns a vertex that is adjacent to origin and not true in visited index. 
+    * @param origin The vertex that will be searched for an unvisited neighbor.
+    * @param visited A boolean array of visited vertices with index based on vertex ids.
+    * @return An unvisited vertex in the order of: Right, Down, Left, Up, or null.
+    */
+    private Vertex unvisitedOrderedNeighbor(Vertex origin, boolean[] visited)
     {
-        int weight = -1;
-        Vertex returnVertex = null;
-        for(Edge edge : graph.getEdges(v))
-        {
-            Vertex currentVertex = edge.getDest();
-            int currentWeight = edge.getWeight();
-            if(!visisted[currentVertex.getId()] && weight < currentWeight)
-            {
-                returnVertex = currentVertex;
-                weight = currentWeight;
-            }
-        }
-        return returnVertex;
+         Vertex unvisitedNeighbor = null;
+         // check right
+         if(origin.getEastVertex() != null && !visited[origin.getEastVertex().getId()])
+         {
+            unvisitedNeighbor = origin.getEastVertex();
+         }
+         // check below
+         else if(origin.getSouthVertex() != null && !visited[origin.getSouthVertex().getId()])
+         {
+            unvisitedNeighbor = origin.getSouthVertex();
+         }
+         // check left
+         else if(origin.getWestVertex() != null && !visited[origin.getWestVertex().getId()])
+         {
+            unvisitedNeighbor = origin.getWestVertex();
+         }
+         // check above
+         else if(origin.getNorthVertex() != null && !visited[origin.getNorthVertex().getId()])
+         {
+            unvisitedNeighbor = origin.getNorthVertex();
+         }
+         return unvisitedNeighbor;
     }
 
+    /**
+     * Finds and returns a vertex that is adjacent to origin and not true in visited index. 
+     * @param origin The vertex that will be searched for an unvisited neighbor.
+     * @param visited A boolean array of visited vertices with index based on vertex ids.
+     * @return An unvisited vertex in the random order or null if none exist
+     */
+    private Vertex randomUnvisitedAdjacent(Vertex origin, boolean[] visisted)
+    {
+        ArrayList<Vertex> unvisitedNeighbors = new ArrayList<>();
+        for(Vertex adjacent : graph.getAdjacent(origin))
+            if(!visisted[adjacent.getId()])
+                unvisitedNeighbors.add(adjacent);
+        
+        return unvisitedNeighbors.isEmpty() ? null : 
+                        unvisitedNeighbors.get(random.nextInt(unvisitedNeighbors.size()));
+    }
+
+    /**
+     * Removes any edges from v that have a wall blocking them.
+     * @param v the vertex that will have edges removed if a wall is in the way.
+     */
     private void rectify(Vertex v)
     {
-        if(v.hasDownWall() && v.getDown() != null)
+        if(v.hasDownWall() && v.getSouthVertex() != null)
         {
-            graph.removeEdge(v, v.getDown());
-            v.setDown(null);
+            graph.removeEdge(v, v.getSouthVertex());
+            v.setSouthVertex(null);
         }
-        if(v.hasUpWall() && v.getUp() != null)
+        if(v.hasUpWall() && v.getNorthVertex() != null)
         {
-            graph.removeEdge(v, v.getUp());
-            v.setUp(null);
+            graph.removeEdge(v, v.getNorthVertex());
+            v.setNorthVertex(null);
         }
-        if(v.hasLeftWall() && v.getLeft() != null)
+        if(v.hasLeftWall() && v.getWestVertex() != null)
         {
-            graph.removeEdge(v, v.getLeft());
-            v.setLeft(null);
+            graph.removeEdge(v, v.getWestVertex());
+            v.setWestVertex(null);
         }
-        if(v.hasRightWall() && v.getRight() != null)
+        if(v.hasRightWall() && v.getEastVertex() != null)
         {
-            graph.removeEdge(v,v.getRight());
-            v.setRight(null);
+            graph.removeEdge(v,v.getEastVertex());
+            v.setEastVertex(null);
         }
     }
 
-    // returns a collection that contains all vertices in a BFS until target reached.
-    public LinkedList<Vertex> pathFidnerBFS(Vertex start)
+    /**
+     * Traverses the maze using bfs adding each vertex 
+     * traversed to a collection until the end point is reached.
+     * @param start the starting vertex
+     * @return a collection of all vertices traversed in the bfs traversal
+     */
+    public Collection<Vertex> bfsTraversal(Vertex start)
     {
         LinkedList<Vertex> path = new LinkedList<>();
         Queue<Vertex> queue = new LinkedList<>();
@@ -232,55 +296,35 @@ public class Maze
         {
             Vertex current = queue.poll();
             path.add(current);
-            graph.getAdjacent(current).forEach(vertex->{
-                if(!visited[vertex.getId()])
+            for(Vertex adjacent : graph.getAdjacent(current))
+                if(!visited[adjacent.getId()])
                 {
-                    queue.add(vertex);
-                    visited[vertex.getId()] = true;
+                    queue.add(adjacent);
+                    visited[adjacent.getId()] = true;
                 }
-            });
-        }
-        while(!queue.isEmpty())
-        {
-            path.add(queue.poll());
+            
         }
         return path;
     }
-
-    // returns a collection of DFS traversal.
-    public LinkedList<Vertex> pathFinderDFS(Vertex current)
+   
+    /**
+     * Traverses the maze using dfs adding each vertex 
+     * traversed to a collection until the end point is reached.
+     * @param start the starting vertex
+     * @return a collection of all vertices traversed in the dfs traversal
+     */
+    public Collection<Vertex> dfsTraversal(Vertex start)
     {
         LinkedList<Vertex> path = new LinkedList<>();    
         boolean[] visited = new boolean[graph.totalVerticies()];
         Stack<Vertex> previous = new Stack<>();
+        Vertex current = start;
         visited[current.getId()] = true;
         int targetNum = targetVertex.getId();
             
             while(!visited[targetNum]) 
             {
-                Vertex next = null;
-                    // check right
-                    if(current.getRight()!= null && !visited[current.getRight().getId()])
-                    {
-                        next = current.getRight();
-                    }
-                    // chek down
-                    else if(current.getDown()!= null && !visited[current.getDown().getId()])
-                    {
-                        next = current.getDown();
-                    }
-                    // check left
-                    else if(current.getLeft()!= null && !visited[current.getLeft().getId()])
-                    {
-                        next = current.getLeft();
-                    }
-                    // check up
-                    else if(current.getUp()!= null && !visited[current.getUp().getId()])
-                    {
-                        next = current.getUp();
-                    }
-                    
-
+                Vertex next = unvisitedOrderedNeighbor(current, visited);
                 if(next != null)
                 {
                     visited[next.getId()] = true;
@@ -291,7 +335,6 @@ public class Maze
                 {
                     path.add(current);
                     current = previous.pop();
-                    
                 }
             }
             while(!previous.empty())
@@ -299,8 +342,12 @@ public class Maze
             return path;
     }
 
-    // returns a collection only that contains only vertices that lead to end.
-    public Stack<Vertex> getPath(Vertex current)
+    /**
+     * Traverses the maze using dfs with a stack for back tracking.
+     * @param start the starting vertex
+     * @return a collection (stack) containing only vertices leading to the target vertex.
+     */ 
+    public Collection<Vertex> getPath(Vertex current)
     {
         boolean[] visited = new boolean[graph.totalVerticies()];
         Stack<Vertex> path = new Stack<>();
@@ -309,7 +356,7 @@ public class Maze
         
         while(!visited[targetNum]) 
         {
-            Vertex next = randomUnvisitedAdjacent(current, visited);
+            Vertex next = unvisitedOrderedNeighbor(current, visited);
             if(next != null)
             {
                 visited[next.getId()] = true;

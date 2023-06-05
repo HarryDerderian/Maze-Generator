@@ -1,15 +1,22 @@
 package WeightDiGraph;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
 
-
 public class Graph
 {
     private HashMap<Vertex, HashSet<Edge>> vertexAndEdges;
     private int totalEdges;
+
+    public Graph()
+    {
+        vertexAndEdges = new HashMap<>();
+        totalEdges = 0;
+    }
+
 
     public Vertex getLast(){
         var iter = vertexAndEdges.keySet().iterator();
@@ -29,20 +36,18 @@ public class Graph
     public Vertex getVertex(int id)
     {
         var iter = vertexAndEdges.keySet().iterator();
-        while(iter.hasNext()){
+        while(iter.hasNext())
+        {
             Vertex current = iter.next();
             
-            if(current.getId() == id){
+            if(current.getId() == id)
+            {
                 return current;
             }
         }
         return null;
     }
-    public Graph()
-    {
-        vertexAndEdges = new HashMap<>();
-        totalEdges = 0;
-    }
+
 
     public boolean containsVertex(Vertex v)
     {
@@ -69,7 +74,7 @@ public class Graph
         HashSet<Vertex> vertices = new HashSet<>();
         vertexAndEdges.forEach( (Vertex v, HashSet<Edge> e)->{
             vertices.add(v);
-        } );
+        });
         return vertices;
     }
     public HashSet<Edge> getEdges(Vertex v)
@@ -94,9 +99,12 @@ public class Graph
         {
             var iter = vertexAndEdges.get(origin).iterator();
             Edge current;
-            while(iter.hasNext()){
+            int destID = destination.getId();
+            while(iter.hasNext())
+            {
                 current = iter.next();
-                if(current.getDest().getId() == destination.getId()){
+                if(current.getDest().getId() == destID)
+                {
                     iter.remove();
                     totalEdges--;
                     break;
@@ -122,7 +130,6 @@ public class Graph
         }
     }
 
-
     public Vertex getRandomVertex()
     {
         Random random = new Random();
@@ -136,25 +143,25 @@ public class Graph
         totalEdges = 0;
     }
 
-    public LinkedList<Vertex> getAdjacent(Vertex v){
+    public Collection<Vertex> getAdjacent(Vertex v){
         LinkedList<Vertex> adjacentVertices = new LinkedList<>();
         if(vertexAndEdges.containsKey(v))
         {
-            if(v.getRight() != null)
+            if(v.getEastVertex() != null)
             {
-                adjacentVertices.addLast(v.getRight());
+                adjacentVertices.addLast(v.getEastVertex());
             }
-            if(v.getDown() != null)
+            if(v.getSouthVertex() != null)
             {
-                adjacentVertices.addLast(v.getDown());
+                adjacentVertices.addLast(v.getSouthVertex());
             }
-            if(v.getLeft() != null)
+            if(v.getWestVertex() != null)
             {
-                adjacentVertices.addLast(v.getLeft());
+                adjacentVertices.addLast(v.getWestVertex());
             }
-            if(v.getUp() != null)
+            if(v.getNorthVertex() != null)
             {
-                adjacentVertices.addLast(v.getUp());
+                adjacentVertices.addLast(v.getNorthVertex());
             }
         }
         return adjacentVertices;

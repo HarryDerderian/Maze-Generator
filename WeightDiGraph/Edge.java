@@ -1,12 +1,9 @@
 package WeightDiGraph;
-
 public class Edge 
 {
     private int weight;
     private Vertex dest;
     private Vertex origin;
-    
-  
     
     public Edge(Vertex origin, Vertex dest){
         this.origin = origin;

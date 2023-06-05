@@ -5,13 +5,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Stack;
-
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -24,7 +20,7 @@ import WeightDiGraph.Vertex;
 public class MazePanel extends JPanel
 {
     private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/background.jpg";
-    private final int MAZE_WALL_WIDTH = 7; 
+    private final int MAZE_WALL_WIDTH = 10; 
     private final float PATH_LINE_WIDTH = (float) 2;
     private final Color WALL_COLOR = Color.LIGHT_GRAY;
     private final Color PATH_COLOR = Color.GREEN;
@@ -59,13 +55,10 @@ public class MazePanel extends JPanel
     {
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "moveUp");
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "moveUp");
-
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"),"moveDown");
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"),"moveDown");
-
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("A"),"moveLeft");
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"),"moveLeft");
-        
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("D"),"moveRight");
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"),"moveRight");
         
@@ -190,7 +183,7 @@ public class MazePanel extends JPanel
         if(graph == null)
             return; // (No graph) -> (No Maze to navigate).
         else if(pathBFS == null){
-            pathBFS = maze.pathFidnerBFS(currentPos);
+            pathBFS = maze.bfsTraversal(currentPos);
             pathDFS = null;
             updatePath();
         }
@@ -209,7 +202,7 @@ public class MazePanel extends JPanel
         return; // (No graph) -> (No Maze to navigate).
         
     else if(pathDFS == null){
-        pathDFS = maze.pathFinderDFS(currentPos);
+        pathDFS = maze.dfsTraversal(currentPos);
         pathBFS = null;
             updatePath();
         }
@@ -280,9 +273,9 @@ public class MazePanel extends JPanel
         if(path != null)
                 path = maze.getPath(currentPos);
         if(pathBFS != null)
-            pathBFS = maze.pathFidnerBFS(currentPos);
+            pathBFS = maze.bfsTraversal(currentPos);
         if(pathDFS != null)
-        pathDFS = maze.pathFinderDFS(currentPos);
+        pathDFS = maze.dfsTraversal(currentPos);
     }
 
     private boolean checkWin()
@@ -295,8 +288,7 @@ public class MazePanel extends JPanel
         }
         return false;
     }
-    // Keyboard control logic:
-    
+    // Keyboard control logic: 
     private class MoveUP extends AbstractAction
     {
         @Override
@@ -304,7 +296,7 @@ public class MazePanel extends JPanel
         {
             if(graph == null || currentPos.hasUpWall())
                 return;
-            currentPos = currentPos.getUp();
+            currentPos = currentPos.getNorthVertex();
             checkWin();
             updatePaths();
             repaint();
@@ -318,7 +310,7 @@ public class MazePanel extends JPanel
         {
             if(graph == null || currentPos.hasDownWall())
                return;
-            currentPos = currentPos.getDown();
+            currentPos = currentPos.getSouthVertex();
             checkWin();
             updatePaths();
             repaint();
@@ -332,7 +324,7 @@ public class MazePanel extends JPanel
         {
             if(graph == null || currentPos.hasRightWall())
                return;
-            currentPos = currentPos.getRight();
+            currentPos = currentPos.getEastVertex();
             checkWin();
             updatePaths();
             repaint();
@@ -345,7 +337,7 @@ public class MazePanel extends JPanel
         {
             if(graph == null || currentPos.hasLeftWall())
                return;
-            currentPos = currentPos.getLeft();
+            currentPos = currentPos.getWestVertex();
             checkWin();
             updatePaths();
             repaint();
