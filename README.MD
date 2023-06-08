@@ -11,6 +11,7 @@ The primary purpose of this program is to provide a visual demonstration of DFS 
 Features:
 
 Visualization of DFS and BFS graph traversal algorithms
+
 Generation of randomized perfect maze using DFS
 
 ![](readmeImages/img_0.png)
