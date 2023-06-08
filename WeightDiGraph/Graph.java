@@ -3,7 +3,6 @@ package WeightDiGraph;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class Graph
@@ -17,15 +16,21 @@ public class Graph
         totalEdges = 0;
     }
 
-
-    public Vertex getLast(){
+    /**
+     * Iterates through every Vertex inside the graph updating the 
+     * current vertex whenever a vertex with a larger ID number is found.
+     * @return Vertex with the largest ID number
+     */
+    public Vertex getLast()
+    {
         var iter = vertexAndEdges.keySet().iterator();
         int id = 0;
         Vertex max = null;
-        while(iter.hasNext()){
+        while(iter.hasNext())
+        {
             Vertex current = iter.next();
-            
-            if(current.getId() > id){
+            if(current.getId() > id)
+            {
                 max = current;
                 id = max.getId();
             }
@@ -33,21 +38,24 @@ public class Graph
         return max;
     }
 
+    /**
+     * Iterates through every Vertex inside the graph until a Vertex with the 
+     * same ID as the parameter is found, or null if no such Vertex is found.
+     * @param id the ID that will be searched for within each Vertice
+     * @return The Vertex with the specified ID or null
+     */
     public Vertex getVertex(int id)
     {
         var iter = vertexAndEdges.keySet().iterator();
         while(iter.hasNext())
         {
             Vertex current = iter.next();
-            
             if(current.getId() == id)
-            {
                 return current;
-            }
+            
         }
         return null;
     }
-
 
     public boolean containsVertex(Vertex v)
     {
@@ -64,20 +72,23 @@ public class Graph
         return vertexAndEdges.size();
     }
 
-    public void addVertex(Vertex v)
+    public void addVertex(Vertex newVertex)
     {
-        if(!vertexAndEdges.containsKey(v))
-        vertexAndEdges.put(v, new HashSet<Edge>());
+        if(!vertexAndEdges.containsKey(newVertex))
+        vertexAndEdges.put(newVertex, new HashSet<Edge>());
     }
 
-    public HashSet<Vertex> getVertices(){
-        HashSet<Vertex> vertices = new HashSet<>();
-        vertexAndEdges.forEach( (Vertex v, HashSet<Edge> e)->{
-            vertices.add(v);
-        });
-        return vertices;
+    public Collection<Vertex> getAllVertices()
+    {
+        return vertexAndEdges.keySet();
     }
-    public HashSet<Edge> getEdges(Vertex v)
+    
+    public Collection<HashSet<Edge>> getAllEdges()
+    {
+        return vertexAndEdges.values();
+    }
+
+    public Collection<Edge> vertexOutgoingEdges(Vertex v)
     {
         return vertexAndEdges.get(v);
     }
@@ -97,73 +108,73 @@ public class Graph
         if(vertexAndEdges.containsKey(origin) 
         && vertexAndEdges.containsKey(destination))
         {
-            var iter = vertexAndEdges.get(origin).iterator();
-            Edge current;
-            int destID = destination.getId();
-            while(iter.hasNext())
-            {
-                current = iter.next();
-                if(current.getDest().getId() == destID)
-                {
-                    iter.remove();
-                    totalEdges--;
-                    break;
-                }
-            }
+            remove(origin, destination);
         }
     }
 
+    /**
+     * Removes a specified vertex from the graph and all edges with it as a dest.
+     * Uses helper method remove.
+     * @param vertexToRemove the specified vertex to be removed
+     */
     public void removeVertex(Vertex vertexToRemove)
     {
-        if(vertexAndEdges.containsKey(vertexToRemove))
+        if(!vertexAndEdges.containsKey(vertexToRemove)) return;
+        
+        vertexAndEdges.remove(vertexToRemove);
+        vertexAndEdges.keySet().forEach(vertex->remove(vertexToRemove,vertex));
+    }
+
+    /**
+     * Checks a given vertex for any edges/connections to a vertex marked for removal, 
+     * if a connection or edge is found the edge is removed.
+     * @param vertexToRemove the vertex to be removed
+     * @param currentVertex the current vertex to check for connections to vertexToRemove
+     */
+    private void remove(Vertex currentVertex, Vertex vertexToRemove)
+    {
+        if(vertexToRemove.equals(currentVertex.getNorthVertex()))
         {
-            vertexAndEdges.remove(vertexToRemove);
-            vertexAndEdges.forEach( (Vertex v, HashSet<Edge> edges)->{
-                for(Edge edge : edges)
-                {
-                    if(edge.getDest().equals(vertexToRemove)){
-                        vertexAndEdges.get(v).remove(edge);
-                        totalEdges--;
-                    }
-                }
-                });
+            currentVertex.setNorthVertex(null);
+        }
+        else if(vertexToRemove.equals(currentVertex.getSouthVertex()))
+        {
+            currentVertex.setSouthVertex(null);
+        }
+        else if(vertexToRemove.equals(currentVertex.getEastVertex()))
+        {
+            currentVertex.setEastVertex(null);
+        }
+        else if(vertexToRemove.equals(currentVertex.getWestVertex()))
+        {
+            currentVertex.setWestVertex(null);
+        }
+        else
+        {
+            return; // each vertex will have at most 4 edges: west, east, south, north.
+        }
+        var iter = vertexAndEdges.get(currentVertex).iterator();
+        while(iter.hasNext())
+        {
+            Edge edge = iter.next();
+            if (edge.getDest().equals(vertexToRemove))
+            {
+                iter.remove();
+                totalEdges--;
+                break;
+            }
         }
     }
 
     public Vertex getRandomVertex()
     {
         Random random = new Random();
-        int index = random.nextInt(vertexAndEdges.size());
-        return getVertex(index);
+        return getVertex(random.nextInt(vertexAndEdges.size()));
     }
 
     public void clear()
     {
         vertexAndEdges.clear();
         totalEdges = 0;
-    }
-
-    public Collection<Vertex> getAdjacent(Vertex v){
-        LinkedList<Vertex> adjacentVertices = new LinkedList<>();
-        if(vertexAndEdges.containsKey(v))
-        {
-            if(v.getEastVertex() != null)
-            {
-                adjacentVertices.addLast(v.getEastVertex());
-            }
-            if(v.getSouthVertex() != null)
-            {
-                adjacentVertices.addLast(v.getSouthVertex());
-            }
-            if(v.getWestVertex() != null)
-            {
-                adjacentVertices.addLast(v.getWestVertex());
-            }
-            if(v.getNorthVertex() != null)
-            {
-                adjacentVertices.addLast(v.getNorthVertex());
-            }
-        }
-        return adjacentVertices;
     }
 }

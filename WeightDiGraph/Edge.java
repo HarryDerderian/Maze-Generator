@@ -5,34 +5,55 @@ public class Edge
     private Vertex dest;
     private Vertex origin;
     
-    public Edge(Vertex origin, Vertex dest){
+    public Edge(Vertex origin, Vertex dest)
+    {
         this.origin = origin;
         this.dest = dest;
         weight = 1;
     }
 
-    public Edge(Vertex origin, Vertex dest, int weight){
+    public Edge(Vertex origin, Vertex dest, int weight)
+    {
         this.origin = origin;
         this.dest = dest;
         this.weight = weight;
     }
 
-    public Vertex getDest() {
+    public Vertex getDest() 
+    {
         return dest;
     }
-    public int getWeight() {
+
+    public int getWeight()
+    {
         return weight;
     }
-    public Vertex getOrigin() {
+
+    public Vertex getOrigin()
+    {
         return origin;
     }
-    public void setDest(Vertex dest) {
+
+    public void setDest(Vertex dest)
+    {
         this.dest = dest;
     }
-    public void setWeight(int weight) {
+
+    public void setWeight(int weight)
+    {
         this.weight = weight;
     }
-    public void setOrigin(Vertex origin) {
+
+    public void setOrigin(Vertex origin)
+    {
         this.origin = origin;
+    }
+
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if(obj == null || obj.getClass() != this.getClass()) return false;
+        Edge e = (Edge) obj;
+        return weight == e.weight && dest == e.dest && origin == e.origin;
     }
 }

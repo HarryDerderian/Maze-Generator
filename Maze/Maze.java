@@ -87,7 +87,7 @@ public class Maze
                 graph.addVertex(v);
             }
         }
-        graph.getVertices().forEach(vertex->connectAdjacentCells(vertex));
+        graph.getAllVertices().forEach(vertex->connectAdjacentCells(vertex));
     }
 
     /**
@@ -160,7 +160,7 @@ public class Maze
                 }
             }
 
-        graph.getVertices().forEach(vertex->rectify(vertex));
+        graph.getAllVertices().forEach(vertex->rectify(vertex));
     }
     
     /**
@@ -176,26 +176,26 @@ public class Maze
         {
             if(v1.getId() > v2.getId())
             {
-                v1.removeUpWall();
-                v2.remvoeDownWall();
+                v1.removeNorthWall();
+                v2.removeSouthWall();
             }
             else
             {
-                v1.remvoeDownWall();
-                v2.removeUpWall();
+                v1.removeSouthWall();
+                v2.removeNorthWall();
             }
         }
         else if(v1.getRow() == v2.getRow()) // same row
         {
             if(v1.getId() > v2.getId()) 
             {
-                v1.removeLeftWall();
-                v2.removeRightWall();
+                v1.removeWestWall();
+                v2.removeEastWall();
             }
             else
             {
-                v1.removeRightWall();
-                v2.removeLeftWall();
+                v1.removeEastWall();
+                v2.removeWestWall();
             }
         }
     }
@@ -238,11 +238,11 @@ public class Maze
      * @param visited A boolean array of visited vertices with index based on vertex ids.
      * @return An unvisited vertex in the random order or null if none exist
      */
-    private Vertex randomUnvisitedAdjacent(Vertex origin, boolean[] visisted)
+    private Vertex randomUnvisitedAdjacent(Vertex origin, boolean[] visited)
     {
         ArrayList<Vertex> unvisitedNeighbors = new ArrayList<>();
-        for(Vertex adjacent : graph.getAdjacent(origin))
-            if(!visisted[adjacent.getId()])
+        for(Vertex adjacent : origin.getAdjacent())
+            if(!visited[adjacent.getId()])
                 unvisitedNeighbors.add(adjacent);
         
         return unvisitedNeighbors.isEmpty() ? null : 
@@ -255,25 +255,21 @@ public class Maze
      */
     private void rectify(Vertex v)
     {
-        if(v.hasDownWall() && v.getSouthVertex() != null)
+        if(v.hasSouthWall() && v.getSouthVertex() != null)
         {
             graph.removeEdge(v, v.getSouthVertex());
-            v.setSouthVertex(null);
         }
-        if(v.hasUpWall() && v.getNorthVertex() != null)
+        if(v.hasNorthWall() && v.getNorthVertex() != null)
         {
             graph.removeEdge(v, v.getNorthVertex());
-            v.setNorthVertex(null);
         }
-        if(v.hasLeftWall() && v.getWestVertex() != null)
+        if(v.hasWestWall() && v.getWestVertex() != null)
         {
             graph.removeEdge(v, v.getWestVertex());
-            v.setWestVertex(null);
         }
-        if(v.hasRightWall() && v.getEastVertex() != null)
+        if(v.hasEastWall() && v.getEastVertex() != null)
         {
             graph.removeEdge(v,v.getEastVertex());
-            v.setEastVertex(null);
         }
     }
 
@@ -295,7 +291,7 @@ public class Maze
         {
             Vertex current = queue.poll();
             path.add(current);
-            for(Vertex adjacent : graph.getAdjacent(current))
+            for(Vertex adjacent : current.getAdjacent())
                 if(!visited[adjacent.getId()])
                 {
                     queue.add(adjacent);

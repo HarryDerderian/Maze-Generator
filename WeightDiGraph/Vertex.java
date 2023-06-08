@@ -1,5 +1,9 @@
 package WeightDiGraph;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Vertex 
 {
     private int id;
@@ -12,7 +16,7 @@ public class Vertex
     private Vertex westVertex;
     private Vertex eastVertex;
     private boolean[] walls; // [0]: top wall, [1]: bottom wall, [2]: left wall, [3]: right wall
-    private Vertex[] adjacentVertices;
+    private Set<Vertex> adjacent;
 
     public Vertex(int id, int x, int y, int row, int column)
     {
@@ -26,40 +30,45 @@ public class Vertex
         walls[1] = true;
         walls[2] = true;
         walls[3] = true;
-
-        adjacentVertices = new Vertex[4];
-        adjacentVertices[0] = eastVertex;
-        adjacentVertices[1] = southVertex;
-        adjacentVertices[2] = northVertex;
-        adjacentVertices[3] = westVertex;
+        northVertex = null;
+        southVertex = null;
+        westVertex = null;
+        eastVertex = null;
+        adjacent = new HashSet<Vertex>();
     }
 
     public int getColumn() 
     {
         return column;
     }
+
     public int getRow() 
     {
         return row;
     }
+
     public int getId()
     {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(int id)
+    {
         this.id = id;
     }
 
-    public int getX() {
+    public int getX()
+    {
         return x;
     }
 
-    public int getY() {
+    public int getY()
+    {
         return y;
     }
 
-    public void setX(int x) {
+    public void setX(int x)
+    {
         this.x = x;
     }
 
@@ -70,23 +79,34 @@ public class Vertex
 
     public void setSouthVertex(Vertex south) 
     {
+        adjacent.remove(southVertex);
         southVertex = south;
-        adjacentVertices[1] = southVertex;
+        if(south != null)
+        adjacent.add(southVertex);
     }
 
     public void setWestVertex(Vertex west) 
     {
-        westVertex = west;   
+        adjacent.remove(westVertex);
+        westVertex = west;
+        if(west != null)
+        adjacent.add(westVertex);
     }
 
     public void setEastVertex(Vertex east)
     {
+        adjacent.remove(eastVertex);
         eastVertex = east;
+        if(east != null)
+        adjacent.add(eastVertex);
     }
 
     public void setNorthVertex(Vertex north) 
     {
+        adjacent.remove(northVertex);
         northVertex = north;
+        if(north != null)
+        adjacent.add(northVertex);
     }
 
     public void setNorthWall(Boolean b)
@@ -109,42 +129,42 @@ public class Vertex
         walls[2] = b;
     }
     
-    public boolean hasUpWall()
+    public boolean hasNorthWall()
     {
         return walls[0];
     }
 
-    public boolean hasDownWall()
+    public boolean hasSouthWall()
     {
         return walls[1];
     }
 
-    public boolean hasLeftWall()
+    public boolean hasWestWall()
     {
         return walls[2];
     }
 
-    public boolean hasRightWall()
+    public boolean hasEastWall()
     {
         return walls[3];
     }
 
-    public void removeRightWall()
+    public void removeEastWall()
     {
         walls[3] = false;
     }
 
-    public void removeLeftWall()
+    public void removeWestWall()
     {
         walls[2] = false;
     }
 
-    public void remvoeDownWall()
+    public void removeSouthWall()
     {
         walls[1] = false;
     }
 
-    public void removeUpWall()
+    public void removeNorthWall()
     {
         walls[0] = false;
     }
@@ -168,16 +188,16 @@ public class Vertex
     {
         return northVertex;
     }
-    
-    public Vertex[] getAdjacent()
-    {
-        return adjacentVertices;
-    }
 
+    public Collection<Vertex> getAdjacent()
+    {
+        return adjacent;
+    }
+    
     @Override
     public boolean equals(Object obj) 
     {
-        if(obj.getClass() != this.getClass()) return false;
+        if(obj == null || obj.getClass() != this.getClass()) return false;
         Vertex v = (Vertex) obj;
         return id == v.id;
     }
