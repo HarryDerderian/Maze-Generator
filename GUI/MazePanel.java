@@ -21,9 +21,10 @@ public class MazePanel extends JPanel
 {
     private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/background.jpg";
     
-    private final float PATH_LINE_WIDTH = (float) 2;
-    private final Color WALL_COLOR = Color.LIGHT_GRAY;
-    private final Color PATH_COLOR = Color.GREEN;
+    private final float PATH_LINE_WIDTH = (float) 4;
+    private final Color WALL_COLOR = new Color(36, 28, 18);
+    private final Color PATH_COLOR = new Color(16, 249, 144);
+    private final Color DEADEND_COLOR = new Color(227, 227, 227);
     // ACTION COMMANDS
     private final MoveUP UP_COMMAND = new MoveUP();
     private final MoveDown DOWN_COMMAND = new MoveDown();
@@ -133,14 +134,14 @@ public class MazePanel extends JPanel
 
     private void drawBFS(Graphics2D g)
     {
-        g.setColor(Color.RED);
+        g.setColor(DEADEND_COLOR);
         g.setStroke(new BasicStroke(PATH_LINE_WIDTH));
         pathBFS.forEach(vertex->drawValidConnections(vertex, g, pathBFS));
     }
 
     private void drawDFS(Graphics2D g)
     {
-        g.setColor(Color.RED);
+        g.setColor(DEADEND_COLOR);
         g.setStroke(new BasicStroke(PATH_LINE_WIDTH));
         pathDFS.forEach(vertex->drawValidConnections(vertex, g, pathDFS));
     }

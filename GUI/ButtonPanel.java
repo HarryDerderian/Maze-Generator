@@ -14,15 +14,14 @@ import javax.swing.JPanel;
 
 public class ButtonPanel extends JPanel
 {   private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/button_background.jpg";
-    private final Color BUTTON_COLOR = new Color(88, 222, 224);
+    private final Color BUTTON_COLOR = Color.ORANGE;
 
     private Image background;
     private JButton bfsButton;
     private JButton dfsButton;
-    private JButton easy;
+    private JButton small;
     private JButton normal;
-    private JButton hard;
-    private JButton start;
+    private JButton large;
     private MazePanel maze;
     
     public ButtonPanel(int width, int height, MazePanel maze)
@@ -71,12 +70,12 @@ public class ButtonPanel extends JPanel
         dfsButton.setForeground(BUTTON_COLOR);
         dfsButton.addActionListener(e->maze.updateDFS());
 
-        easy = new JButton("EASY");
-        easy.setFocusPainted(false);
-        easy.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
-        easy.setBackground(Color.BLACK);
-        easy.setForeground(BUTTON_COLOR);
-        easy.addActionListener(e->maze.renderNewMaze(10,10));
+        small = new JButton("SMALL");
+        small.setFocusPainted(false);
+        small.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
+        small.setBackground(Color.BLACK);
+        small.setForeground(BUTTON_COLOR);
+        small.addActionListener(e->maze.renderNewMaze(10,10));
 
         normal = new JButton("NORMAL");
         normal.setFocusPainted(false);
@@ -85,18 +84,13 @@ public class ButtonPanel extends JPanel
         normal.setForeground(BUTTON_COLOR);
         normal.addActionListener(e->maze.renderNewMaze(25,25));
 
-        hard = new JButton("HARD");
-        hard.setFocusPainted(false);
-        hard.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
-        hard.setBackground(Color.BLACK);
-        hard.setForeground(BUTTON_COLOR);
-        hard.addActionListener(e->maze.renderNewMaze(50,50));
+        large = new JButton("LARGE");
+        large.setFocusPainted(false);
+        large.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
+        large.setBackground(Color.BLACK);
+        large.setForeground(BUTTON_COLOR);
+        large.addActionListener(e->maze.renderNewMaze(50,50));
 
-        start = new JButton("START");
-        start.setFocusPainted(false);
-        start.setBorder(BorderFactory.createLineBorder(BUTTON_COLOR));
-        start.setBackground(Color.BLACK);
-        start.setForeground(BUTTON_COLOR);
     }
 
     private void addButtons()
@@ -119,15 +113,13 @@ public class ButtonPanel extends JPanel
         add(bfsButton, constratins);
 
         constratins.gridy = 2; // row 3
-        add(easy, constratins);
+        add(small, constratins);
 
         constratins.gridy = 3; // row 4
         add(normal, constratins);
 
         constratins.gridy = 4; // row 5
-        add(hard, constratins);
+        add(large, constratins);
 
-        constratins.gridy = 5; // row 6
-        add(start, constratins);
     }
 }
