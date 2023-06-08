@@ -52,7 +52,6 @@ public class Graph
             Vertex current = iter.next();
             if(current.getId() == id)
                 return current;
-            
         }
         return null;
     }
@@ -86,11 +85,6 @@ public class Graph
     public Collection<HashSet<Edge>> getAllEdges()
     {
         return vertexAndEdges.values();
-    }
-
-    public Collection<Edge> vertexOutgoingEdges(Vertex v)
-    {
-        return vertexAndEdges.get(v);
     }
 
     public void createEdge(Vertex origin, Vertex destination, int weight)
