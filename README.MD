@@ -18,9 +18,9 @@ Generation of randomized perfect maze using DFS
 ![](readmeImages/img_1.png)
 ![](readmeImages/img_2.png)
 
-Acknowledgements
+Acknowledgements:
 I would like to acknowledge the following resources that helped me during the development of this project:
 
-Resource 1:https://www.baeldung.com/cs/maze-generation
+Resource 1: https://www.baeldung.com/cs/maze-generation
 
-Resource 2:https://makeschool.org/mediabook/oa/tutorials/trees-and-mazes/generating-a-maze-with-dfs/
+Resource 2: https://makeschool.org/mediabook/oa/tutorials/trees-and-mazes/generating-a-maze-with-dfs/
