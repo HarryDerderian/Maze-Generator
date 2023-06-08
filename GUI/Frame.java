@@ -1,5 +1,6 @@
 package GUI;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import javax.swing.JFrame;
@@ -26,7 +27,7 @@ public class Frame extends JFrame implements ComponentListener
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        
+        setMinimumSize(new Dimension(MAZE_PANEL_WIDTH + SIDE_PANEL_WIDTH, MAZE_PANEL_HEIGHT));
     }
 
     @Override

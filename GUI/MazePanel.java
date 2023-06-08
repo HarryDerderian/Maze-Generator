@@ -22,7 +22,7 @@ public class MazePanel extends JPanel
     private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/background.jpg";
     
     private final float PATH_LINE_WIDTH = (float) 4;
-    private final Color WALL_COLOR = new Color(36, 28, 18);
+    private final Color WALL_COLOR = new Color(79, 39, 28);
     private final Color PATH_COLOR = new Color(16, 249, 144);
     private final Color DEADEND_COLOR = new Color(227, 227, 227);
     // ACTION COMMANDS
