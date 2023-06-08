@@ -20,7 +20,7 @@ import WeightDiGraph.Vertex;
 public class MazePanel extends JPanel
 {
     private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/background.jpg";
-    private final int MAZE_WALL_WIDTH = 10; 
+    
     private final float PATH_LINE_WIDTH = (float) 2;
     private final Color WALL_COLOR = Color.LIGHT_GRAY;
     private final Color PATH_COLOR = Color.GREEN;
@@ -29,6 +29,8 @@ public class MazePanel extends JPanel
     private final MoveDown DOWN_COMMAND = new MoveDown();
     private final MoveLeft LEFT_COMMAND = new MoveLeft();
     private final MoveRight RIGHT_COMMAND = new MoveRight();
+    
+    private int mazeWallWidth;
     private Image background;
     private Maze maze;
     private Graph graph;
@@ -38,14 +40,13 @@ public class MazePanel extends JPanel
     private Collection<Vertex> pathBFS;
     private Collection<Vertex> pathDFS;
     private Vertex currentPos;
-    private ScorePanel score;
 
-    public MazePanel(int width, int height, ScorePanel score)
+    public MazePanel(int width, int height)
     {
+        mazeWallWidth = 10;
         setPreferredSize(new Dimension(width, height));
         buildBackground();
         buildKeyBinding();
-        this.score = score;
     }
 
     private void buildKeyBinding()
@@ -92,7 +93,7 @@ public class MazePanel extends JPanel
     private void drawMaze(Graphics2D g2d)
     {
         g2d.setColor(WALL_COLOR);
-        g2d.setStroke(new BasicStroke(MAZE_WALL_WIDTH));
+        g2d.setStroke(new BasicStroke(mazeWallWidth));
         graph.getAllVertices().forEach(vertex->drawWalls(g2d, vertex));
     }
 
@@ -112,6 +113,13 @@ public class MazePanel extends JPanel
 
     public void renderNewMaze(int rows, int columns)
     {
+        if(rows > 25) 
+            mazeWallWidth = 4;
+        else if (rows > 10)
+            mazeWallWidth = 10;
+        else 
+            mazeWallWidth = 15;
+        
         maze = new Maze(getWidth(), getHeight(), rows, columns);
         graph = maze.getGraph();
         cellWidth = maze.getCellWidth();
@@ -250,18 +258,17 @@ public class MazePanel extends JPanel
     private void updatePaths()
     {
         if(path != null)
-                path = maze.getPath(currentPos);
+            path = maze.getPath(currentPos);
         if(pathBFS != null)
             pathBFS = maze.bfsTraversal(currentPos);
         if(pathDFS != null)
-        pathDFS = maze.dfsTraversal(currentPos);
+            pathDFS = maze.dfsTraversal(currentPos);
     }
 
     private boolean checkWin()
     {
         if(currentPos.equals(maze.getTarget()))
         {
-            score.updateScore();
             renderNewMaze(maze.getNumRows(), maze.getNumColumns());
             return true;
         }

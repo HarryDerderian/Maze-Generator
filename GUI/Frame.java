@@ -12,15 +12,12 @@ public class Frame extends JFrame implements ComponentListener
     private final int SIDE_PANEL_WIDTH = 300;
     private MazePanel mazePanel;
     private ButtonPanel buttonPanel;
-    private ScorePanel scorePanel;
 
     public Frame()
     {
         setTitle(TITLE);
-        scorePanel = new ScorePanel(SIDE_PANEL_WIDTH, MAZE_PANEL_HEIGHT);
-        add(scorePanel,BorderLayout.WEST);
         pack();
-        mazePanel = new MazePanel(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT, scorePanel);
+        mazePanel = new MazePanel(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT);
         add(mazePanel, BorderLayout.CENTER);
         buttonPanel = new ButtonPanel(SIDE_PANEL_WIDTH, MAZE_PANEL_HEIGHT, mazePanel);
         add(buttonPanel, BorderLayout.EAST);
