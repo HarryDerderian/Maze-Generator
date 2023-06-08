@@ -115,7 +115,7 @@ public class MazePanel extends JPanel
     public void renderNewMaze(int rows, int columns)
     {
         if(rows > 25) 
-            mazeWallWidth = 4;
+            mazeWallWidth = 6;
         else if (rows > 10)
             mazeWallWidth = 10;
         else 
