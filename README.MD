@@ -4,7 +4,7 @@ This project provides a visual representation of Depth-First Search (DFS) and Br
 
 I started by researching general concepts online and stumbled upon maze generation using DFS. After reading a brief overview, I decided to implement everything from scratch, referring to external resources only when encountering challenges.
 
-Purpose
+Purpose:
 The primary purpose of this program is to provide a visual demonstration of DFS and BFS algorithms. Additionally, it showcases how DFS can be utilized to generate a randomized perfect maze.
 
 Features
