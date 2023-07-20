@@ -6,14 +6,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class ButtonPanel extends JPanel
-{   private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/button_background.jpg";
+{   private String BACKGROUND_IMG_PATH = "/GUI/Backgrounds/button_background.jpg";
     private final Color BUTTON_COLOR = Color.ORANGE;
 
     private Image background;
@@ -38,10 +37,11 @@ public class ButtonPanel extends JPanel
     {
         try
         {
-            background = ImageIO.read(new File(BACKGROUND_IMG_PATH));
+            background = ImageIO.read(getClass().getResource(BACKGROUND_IMG_PATH));
         }
         catch(Exception e)
         {
+            System.out.println("(Button Panel) Failed to load images: fallback background set to black.");
             setBackground(Color.BLACK);
         }
     }

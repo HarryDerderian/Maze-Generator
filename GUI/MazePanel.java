@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.util.Collection;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -19,7 +18,7 @@ import WeightDiGraph.Vertex;
 
 public class MazePanel extends JPanel
 {
-    private String BACKGROUND_IMG_PATH = "GUI/Backgrounds/background.jpg";
+    private String BACKGROUND_IMG_PATH = "/GUI/Backgrounds/background.jpg";
     
     private final float PATH_LINE_WIDTH = (float) 4;
     private final Color WALL_COLOR = new Color(79, 39, 28);
@@ -70,10 +69,11 @@ public class MazePanel extends JPanel
     {
         try
         {
-            background = ImageIO.read(new File(BACKGROUND_IMG_PATH));
+            background = ImageIO.read(getClass().getResource(BACKGROUND_IMG_PATH));
         }
         catch(Exception e)
         {
+            System.out.println("(Main Panel) Failed to load images: fallback background set to black.");
             setBackground(Color.BLACK);
         }
     }
